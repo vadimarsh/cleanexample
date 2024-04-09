@@ -1,5 +1,6 @@
 import application.config.GUISwingConfig;
-import application.gui.MainWindow;
+import application.gui.MainWindowController;
+import application.gui.MainWindowView;
 import domain.entity.Discipline;
 import domain.entity.Task;
 import domain.usecase.discipline.CreateDisciplineUseCase;
@@ -48,7 +49,7 @@ public class Main {
             System.out.println(tasks.get(i));
         }
 
-        new MainWindow(defaultConfig);
+        new MainWindowController(defaultConfig, new MainWindowView());
 
     }
 }
