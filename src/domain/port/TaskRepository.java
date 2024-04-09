@@ -1,4 +1,4 @@
-package usecase.port;
+package domain.port;
 
 import domain.entity.Discipline;
 import domain.entity.Task;
@@ -10,4 +10,6 @@ public interface TaskRepository {
     List<Task> findByDiscipline(Discipline discipline);
 
     Task update(Task task);
+
+    List<Task> getTasks();
 }
