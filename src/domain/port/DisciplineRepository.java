@@ -8,4 +8,6 @@ public interface DisciplineRepository {
     Discipline create (Discipline discipline);
 
     List<Discipline> getDisciplines();
+
+    void update(Discipline discipline);
 }

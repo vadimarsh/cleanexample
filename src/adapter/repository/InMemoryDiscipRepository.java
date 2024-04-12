@@ -1,4 +1,4 @@
-package adapter;
+package adapter.repository;
 
 import domain.entity.Discipline;
 import domain.port.DisciplineRepository;
@@ -17,5 +17,10 @@ public class InMemoryDiscipRepository implements DisciplineRepository {
     @Override
     public List<Discipline> getDisciplines() {
         return disciplines;
+    }
+
+    @Override
+    public void update(Discipline discipline) {
+        disciplines.set(disciplines.indexOf(discipline),discipline);
     }
 }

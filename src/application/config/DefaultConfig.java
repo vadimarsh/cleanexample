@@ -1,7 +1,7 @@
 package application.config;
 
-import adapter.InMemoryDiscipRepository;
-import adapter.InMemoryTaskRepository;
+import adapter.repository.InMemoryDiscipRepository;
+import adapter.repository.InMemoryTaskRepository;
 import domain.port.DisciplineRepository;
 import domain.port.TaskRepository;
 import domain.usecase.discipline.CreateDisciplineUseCase;

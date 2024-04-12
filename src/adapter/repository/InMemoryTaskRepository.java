@@ -1,4 +1,4 @@
-package adapter;
+package adapter.repository;
 
 import domain.entity.Discipline;
 import domain.entity.Task;
