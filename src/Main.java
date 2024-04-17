@@ -1,6 +1,6 @@
-import application.config.GUISwingConfig;
-import application.gui.MainWindowController;
-import application.gui.MainWindowView;
+import presentation.config.GUISwingConfig;
+import presentation.gui.mainwindow.MainWindowController;
+import presentation.gui.mainwindow.MainWindowView;
 import domain.entity.Discipline;
 import domain.entity.Task;
 import domain.usecase.discipline.CreateDisciplineUseCase;
@@ -48,8 +48,10 @@ public class Main {
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println(tasks.get(i));
         }
-
-        new MainWindowController(defaultConfig, new MainWindowView());
-
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new MainWindowController(defaultConfig, new MainWindowView());
+            }
+        });
     }
 }

@@ -1,16 +1,18 @@
-package application.config;
+package presentation.config;
 
 import adapter.repository.InMemoryDiscipRepository;
 import adapter.repository.InMemoryTaskRepository;
 import domain.port.DisciplineRepository;
 import domain.port.TaskRepository;
+import domain.usecase.discipline.CloseDisciplineUseCase;
 import domain.usecase.discipline.CreateDisciplineUseCase;
 import domain.usecase.discipline.GetAllDisciplinesUseCase;
 import domain.usecase.task.CreateTaskUseCase;
 import domain.usecase.task.GetAllTasksByDisciplineUseCase;
 import domain.usecase.task.GetAllTasksUseCase;
+import domain.usecase.task.MarkDoneTaskUseCase;
 
-public class DefaultConfig {
+public class GUISwingConfig {
     private final TaskRepository taskRepository = new InMemoryTaskRepository();
     private final DisciplineRepository disciplineRepository = new InMemoryDiscipRepository();
 
@@ -23,7 +25,7 @@ public class DefaultConfig {
     }
 
     public GetAllDisciplinesUseCase getAllDiscliplines() {
-    return new GetAllDisciplinesUseCase(disciplineRepository);
+        return new GetAllDisciplinesUseCase(disciplineRepository);
     }
 
     public GetAllTasksByDisciplineUseCase getAllTasksByDisclipline() {
@@ -33,4 +35,8 @@ public class DefaultConfig {
         return new GetAllTasksUseCase(taskRepository);
     }
 
+    public MarkDoneTaskUseCase markDoneTask() { return new MarkDoneTaskUseCase(taskRepository);}
+
+    public CloseDisciplineUseCase closeDiscipline() { return new CloseDisciplineUseCase(disciplineRepository,taskRepository);
+    }
 }

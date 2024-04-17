@@ -9,11 +9,7 @@ public class Discipline {
 
     @Override
     public String toString() {
-        return "Discipline{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", semestr=" + semestr +
-                '}';
+        return name;
     }
 
     public Discipline(int id, String name, boolean closed, int semestr) {

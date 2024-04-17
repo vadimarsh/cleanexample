@@ -1,4 +1,4 @@
-package application.config;
+package presentation.config;
 
 import adapter.repository.InMemoryDiscipRepository;
 import adapter.repository.InMemoryTaskRepository;
@@ -10,7 +10,7 @@ import domain.usecase.task.CreateTaskUseCase;
 import domain.usecase.task.GetAllTasksByDisciplineUseCase;
 import domain.usecase.task.GetAllTasksUseCase;
 
-public class GUISwingConfig {
+public class DefaultConfig {
     private final TaskRepository taskRepository = new InMemoryTaskRepository();
     private final DisciplineRepository disciplineRepository = new InMemoryDiscipRepository();
 
@@ -23,7 +23,7 @@ public class GUISwingConfig {
     }
 
     public GetAllDisciplinesUseCase getAllDiscliplines() {
-        return new GetAllDisciplinesUseCase(disciplineRepository);
+    return new GetAllDisciplinesUseCase(disciplineRepository);
     }
 
     public GetAllTasksByDisciplineUseCase getAllTasksByDisclipline() {

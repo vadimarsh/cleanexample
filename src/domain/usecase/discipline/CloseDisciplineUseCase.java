@@ -26,7 +26,7 @@ public class CloseDisciplineUseCase {
         boolean flag = true;
         List<Task> tasksByDiscipline = taskRepository.findByDiscipline(discipline);
         for (int i = 0; i < tasksByDiscipline.size(); i++) {
-            if(tasksByDiscipline.get(i).isClosed()==false){
+            if(!tasksByDiscipline.get(i).isClosed()){
                 flag = false;
                 break;
             }
