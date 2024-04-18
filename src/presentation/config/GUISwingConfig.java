@@ -4,7 +4,7 @@ import data.repository.inmemory.InMemoryDiscipRepository;
 import data.repository.inmemory.InMemoryTaskRepository;
 import domain.port.DisciplineRepository;
 import domain.port.TaskRepository;
-import domain.usecase.discipline.CloseDisciplineUseCase;
+import domain.usecase.discipline.RefreshDisciplineStatusUseCase;
 import domain.usecase.discipline.CreateDisciplineUseCase;
 import domain.usecase.discipline.GetAllDisciplinesUseCase;
 import domain.usecase.task.*;
@@ -35,7 +35,7 @@ public class GUISwingConfig {
 
     public MarkDoneTaskUseCase markDoneTask() { return new MarkDoneTaskUseCase(taskRepository);}
 
-    public CloseDisciplineUseCase closeDiscipline() { return new CloseDisciplineUseCase(disciplineRepository,taskRepository);
+    public RefreshDisciplineStatusUseCase refreshDisciplineStatus() { return new RefreshDisciplineStatusUseCase(disciplineRepository,taskRepository);
     }
 
     public GetUnclosedTasks getUnclosedTasks() { return new GetUnclosedTasks(taskRepository);

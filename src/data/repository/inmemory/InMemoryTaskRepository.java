@@ -52,4 +52,10 @@ public class InMemoryTaskRepository implements TaskRepository {
         }
         return unclosedTasks;
     }
+
+    @Override
+    public boolean delete(Task task) {
+        tasks.remove(task);
+        return tasks.remove(task);
+    }
 }

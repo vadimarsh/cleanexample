@@ -14,4 +14,6 @@ public interface TaskRepository {
     List<Task> getTasks();
 
     List<Task> getUnclosedTasks();
+
+    boolean delete(Task task);
 }

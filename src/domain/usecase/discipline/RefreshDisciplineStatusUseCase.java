@@ -7,19 +7,22 @@ import domain.port.TaskRepository;
 
 import java.util.List;
 
-public class CloseDisciplineUseCase {
-    private DisciplineRepository disciplineRepository;
-    private TaskRepository taskRepository;
-    public CloseDisciplineUseCase(DisciplineRepository disciplineRepository, TaskRepository taskRepository){
+public class RefreshDisciplineStatusUseCase {
+    private final DisciplineRepository disciplineRepository;
+    private final TaskRepository taskRepository;
+    public RefreshDisciplineStatusUseCase(DisciplineRepository disciplineRepository, TaskRepository taskRepository){
         this.disciplineRepository = disciplineRepository;
         this.taskRepository = taskRepository;
 
     }
     public Discipline invoke(final Discipline discipline){
-       if(checkTasks(discipline)==true){
+       if(checkTasks(discipline)){
            discipline.setClosed(true);
            disciplineRepository.update(discipline);
+       }else{
+           discipline.setClosed(false);
        }
+       disciplineRepository.update(discipline);
        return discipline;
     }
     private boolean checkTasks(final Discipline discipline){

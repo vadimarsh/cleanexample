@@ -1,7 +1,6 @@
 package presentation.gui.discwindow;
 
 import domain.entity.Discipline;
-import domain.entity.Task;
 import domain.usecase.discipline.CreateDisciplineUseCase;
 import domain.usecase.discipline.GetAllDisciplinesUseCase;
 import presentation.config.GUISwingConfig;
@@ -10,9 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class DisciplinesWindowController {
-    private DisciplinesWindowView view;
+    private final DisciplinesWindowView view;
     private DisciplinesTableModel disciplinesTableModel;
-    private GUISwingConfig config;
+    private final GUISwingConfig config;
 
     private GetAllDisciplinesUseCase getAllDisciplinesUseCase;
     private CreateDisciplineUseCase createDisciplineUseCase;
@@ -41,7 +40,7 @@ public class DisciplinesWindowController {
     }
 
     private void setTableModel() {
-        disciplinesTableModel = new DisciplinesTableModel(this.config);
+        disciplinesTableModel = new DisciplinesTableModel(this,getAllDisciplinesUseCase.invoke());
         this.view.getTableDisciplines().setModel(disciplinesTableModel);
     }
 }

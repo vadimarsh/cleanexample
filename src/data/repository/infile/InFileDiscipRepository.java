@@ -39,4 +39,10 @@ public class InFileDiscipRepository implements DisciplineRepository {
     public void update(Discipline discipline) {
         disciplines.set(disciplines.indexOf(discipline),discipline);
     }
+
+    @Override
+    public List<Discipline> getUnclosedDisciplines() {
+
+        return null;
+    }
 }

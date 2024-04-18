@@ -1,6 +1,6 @@
 package presentation.gui.mainwindow;
 
-import domain.usecase.discipline.CloseDisciplineUseCase;
+import domain.usecase.discipline.RefreshDisciplineStatusUseCase;
 import domain.usecase.task.*;
 import presentation.config.GUISwingConfig;
 import domain.entity.Discipline;
@@ -33,7 +33,7 @@ public class MainWindowController {
     private GetUnclosedTasks getUnclosedTasksUseCase;
     private GetAllTasksUseCase getAllTasksUseCase;
     private MarkDoneTaskUseCase markDoneTaskUseCase;
-    private CloseDisciplineUseCase closeDisciplineUseCase;
+    private RefreshDisciplineStatusUseCase refreshDisciplineStatusUseCase;
     private SetDeadLineUseCase setDeadLineUseCase;
 
     public MainWindowController(GUISwingConfig config, MainWindowView mainWindowView){
@@ -48,7 +48,7 @@ public class MainWindowController {
         getUnclosedTasksUseCase = config.getUnclosedTasks();
         getAllTasksUseCase = config.getAllTasks();
         markDoneTaskUseCase = config.markDoneTask();
-        closeDisciplineUseCase = config.closeDiscipline();
+        refreshDisciplineStatusUseCase = config.refreshDisciplineStatus();
         setDeadLineUseCase = config.setDeadLine();
 
         refreshTableModel();
@@ -89,7 +89,9 @@ public class MainWindowController {
         } catch (ParseException e) {
             System.err.println("неверный формат даты");
         }
-        createTaskUseCase.invoke(task);
+        createTaskUseCase.invoke(task); // добавляем новую задачу
+        //вызываем функцию бизнес-логики "обновить статус дисциплины", чтобы опять пометить дисциплину как нерешенную, на тот случай если она была уже закрыта
+        refreshDisciplineStatusUseCase.invoke(task.getDiscipline());
         mainTableModel.fireTableDataChanged();
     }
 
@@ -110,9 +112,10 @@ public class MainWindowController {
 
     public boolean closeTask(Task task){
         if (!task.isClosed()) {
-            markDoneTaskUseCase.invoke(task);
+            markDoneTaskUseCase.invoke(task); //вызываем функцию бизнес-логики "закрыть задачу"
             Discipline discipline = task.getDiscipline();
-            closeDisciplineUseCase.invoke(discipline);
+            //вызываем функцию бизнес-логики "обновить статус дисциплины" на тот случай если все задачи в этой дисциплине были уже решены
+            refreshDisciplineStatusUseCase.invoke(discipline);
             refreshTableModel();
             return true;
         }

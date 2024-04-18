@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class DisciplinesWindowView {
-    private JDialog disciplinesFrame;
+    private final JDialog disciplinesFrame;
     private JTable tableDisciplines;
     private JPanel addDisciplinePanel;
     private JButton butAddDiscipline;
@@ -18,8 +18,9 @@ public class DisciplinesWindowView {
         initComponents();
         placeComponents();
 
-        disciplinesFrame.setSize(400,500);
+        disciplinesFrame.setSize(300,300);
         disciplinesFrame.setLocationRelativeTo(null);
+        disciplinesFrame.setResizable(false);
         disciplinesFrame.setVisible(true);
         disciplinesFrame.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 

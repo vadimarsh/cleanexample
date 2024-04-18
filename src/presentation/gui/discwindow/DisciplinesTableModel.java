@@ -1,25 +1,32 @@
 package presentation.gui.discwindow;
 
 import domain.entity.Discipline;
-import domain.entity.Task;
-import domain.usecase.discipline.GetAllDisciplinesUseCase;
-import domain.usecase.task.GetAllTasksUseCase;
-import presentation.config.GUISwingConfig;
-
 import javax.swing.table.AbstractTableModel;
+import java.util.List;
 
 public class DisciplinesTableModel extends AbstractTableModel {
-    private GUISwingConfig guiSwingConfig;
-    private GetAllDisciplinesUseCase getAllDisciplinesUseCase;
+    private List<Discipline> disciplines;
+    private final DisciplinesWindowController controller;
 
-    public DisciplinesTableModel(GUISwingConfig guiSwingConfig) {
-        this.guiSwingConfig = guiSwingConfig;
-        getAllDisciplinesUseCase = this.guiSwingConfig.getAllDiscliplines();
+
+    public DisciplinesTableModel(DisciplinesWindowController controller, List<Discipline> disciplineList) {
+        this.controller = controller;
+        this.disciplines = disciplineList;
     }
 
     @Override
     public int getRowCount() {
-        return getAllDisciplinesUseCase.invoke().size();
+        return disciplines.size();
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        switch (column){
+            case 0: return "Предмет";
+            case 1: return "Семестр";
+            case 2: return "Завершена";
+        }
+        return super.getColumnName(column);
     }
 
     @Override
@@ -29,7 +36,7 @@ public class DisciplinesTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Discipline discipline = getAllDisciplinesUseCase.invoke().get(rowIndex);
+        Discipline discipline = disciplines.get(rowIndex);
         switch (columnIndex) {
             case 0: {
                 return discipline.getName();

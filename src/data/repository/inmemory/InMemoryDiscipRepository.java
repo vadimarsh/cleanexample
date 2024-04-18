@@ -23,4 +23,15 @@ public class InMemoryDiscipRepository implements DisciplineRepository {
     public void update(Discipline discipline) {
         disciplines.set(disciplines.indexOf(discipline),discipline);
     }
+
+    @Override
+    public List<Discipline> getUnclosedDisciplines() {
+        List<Discipline> unclosedDisciplines = new ArrayList<>();
+        for (int i = 0; i < disciplines.size(); i++) {
+            if(!disciplines.get(i).isClosed()){
+                unclosedDisciplines.add(disciplines.get(i));
+            }
+        }
+        return unclosedDisciplines;
+    }
 }

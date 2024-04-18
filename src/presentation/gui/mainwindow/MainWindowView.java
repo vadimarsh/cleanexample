@@ -17,7 +17,6 @@ public class MainWindowView {
 
     private final JFrame mainFrame;
     private JTable tableTasks;
-    private JPanel addTaskPanel;
     private JButton butAddTask;
 
     private JTextField tfTaskTitle;
@@ -35,9 +34,9 @@ public class MainWindowView {
         initComponents();
         placeComponents();
 
-        mainFrame.setSize(400,500);
+        mainFrame.setSize(600,350);
+        mainFrame.setResizable(false);
         mainFrame.setLocationRelativeTo(null);
-        mainFrame.pack();
         mainFrame.setVisible(true);
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -53,10 +52,8 @@ public class MainWindowView {
         miDisciplines = new JMenuItem("Дисциплины");
         miUnclosedTasks = new JCheckBoxMenuItem("Незакрытые задачи");
 
-        addTaskPanel = new JPanel();
-
         butAddTask = new JButton("Добавить");
-        tfTaskTitle = new JTextField();
+        tfTaskTitle = new JTextField(40);
         DateFormat date = new SimpleDateFormat("dd.MM.yyyy"); // Форматирующий объект даты
         DateFormatter dateFormatter = new DateFormatter(date);
         dateFormatter.setAllowsInvalid(false);
@@ -64,7 +61,9 @@ public class MainWindowView {
         tfDeadLine = new JFormattedTextField(dateFormatter);
         tfDeadLine.setColumns(10);
         tfDeadLine.setValue(new Date());
+        tfDeadLine.setPreferredSize(new Dimension(30,30));
         cbDiscipline = new JComboBox();
+        cbDiscipline.setSize(new Dimension(100,30));
     }
 
     private void placeComponents() {
@@ -73,18 +72,43 @@ public class MainWindowView {
         mainWindowMenu.add(miUnclosedTasks);
         mainWindowMenuBar.add(mainWindowMenu);
         mainFrame.setJMenuBar(mainWindowMenuBar);
+        JLabel jLabelTask = new JLabel("Задача:");
+        JLabel jLabelDiscipline = new JLabel("Предмет:");
+        JLabel jLabelDeadline = new JLabel("Дедлайн:");
 
-        BoxLayout boxLayout = new BoxLayout(addTaskPanel,BoxLayout.Y_AXIS);
-        addTaskPanel.setLayout(boxLayout);
-        addTaskPanel.add(tfTaskTitle);
-        addTaskPanel.add(tfDeadLine);
-        addTaskPanel.add(cbDiscipline);
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panel.add(butAddTask);
-        addTaskPanel.add(panel);
+        //jLabelTask.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        //tfTaskTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+        Box taskTitleBox= new Box(BoxLayout.X_AXIS);
+        //taskTitleBox.setAlignmentY(Component.CENTER_ALIGNMENT);
+        taskTitleBox.add(Box.createRigidArea(new Dimension(40,0)));
+        taskTitleBox.add(jLabelTask);
+        taskTitleBox.add(Box.createRigidArea(new Dimension(10,0)));
+        taskTitleBox.add(tfTaskTitle);
+        taskTitleBox.add(Box.createRigidArea(new Dimension(40,0)));
+
+        Box taskDetailsBox= new Box(BoxLayout.X_AXIS);
+        taskDetailsBox.add(Box.createRigidArea(new Dimension(40,0)));
+        taskDetailsBox.add(jLabelDiscipline);
+        taskDetailsBox.add(Box.createRigidArea(new Dimension(10,0)));
+        taskDetailsBox.add(cbDiscipline);
+        taskDetailsBox.add(Box.createRigidArea(new Dimension(10,0)));
+        taskDetailsBox.add(jLabelDeadline);
+        taskDetailsBox.add(Box.createRigidArea(new Dimension(10,0)));
+        taskDetailsBox.add(tfDeadLine);
+        taskDetailsBox.add(Box.createRigidArea(new Dimension(10,0)));
+        taskDetailsBox.add(butAddTask);
+        taskDetailsBox.add(Box.createRigidArea(new Dimension(40,0)));
+
+
+        Box wrapBox = new Box(BoxLayout.Y_AXIS);
+        wrapBox.add(Box.createVerticalStrut(8));
+        wrapBox.add(taskTitleBox);
+        wrapBox.add(Box.createVerticalStrut(8));
+        wrapBox.add(taskDetailsBox);
+        wrapBox.add(Box.createVerticalStrut(8));
 
         mainFrame.getContentPane().add(new JScrollPane(tableTasks));
-        mainFrame.getContentPane().add(addTaskPanel, BorderLayout.SOUTH);
+        mainFrame.getContentPane().add(wrapBox, BorderLayout.SOUTH);
     }
     public JFrame getMainFrame() {
         return mainFrame;

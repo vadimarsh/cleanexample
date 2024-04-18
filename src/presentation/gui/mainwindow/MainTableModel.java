@@ -1,17 +1,13 @@
 package presentation.gui.mainwindow;
 
-import domain.usecase.discipline.CloseDisciplineUseCase;
-import presentation.config.GUISwingConfig;
 import domain.entity.Task;
-import domain.usecase.task.GetAllTasksUseCase;
-import domain.usecase.task.MarkDoneTaskUseCase;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.Date;
 import java.util.List;
 
 public class MainTableModel extends AbstractTableModel {
-    private MainWindowController controller;
+    private final MainWindowController controller;
     private List<Task> tasks;
     public MainTableModel(MainWindowController controller, List<Task> tasks) {
         this.controller = controller;
@@ -83,7 +79,7 @@ public class MainTableModel extends AbstractTableModel {
     public String getColumnName(int column) {
         switch (column){
             case 0: return "Задача";
-            case 1: return "Дисциплина";
+            case 1: return "Предмет";
             case 2: return "Дедлайн";
             case 3: return "Завершена";
         }

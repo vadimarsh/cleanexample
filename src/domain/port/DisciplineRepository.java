@@ -10,4 +10,6 @@ public interface DisciplineRepository {
     List<Discipline> getDisciplines();
 
     void update(Discipline discipline);
+
+    List<Discipline> getUnclosedDisciplines();
 }
