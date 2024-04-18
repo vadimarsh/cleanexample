@@ -1,4 +1,4 @@
-package adapter.repository;
+package data.repository.inmemory;
 
 import domain.entity.Discipline;
 import domain.port.DisciplineRepository;

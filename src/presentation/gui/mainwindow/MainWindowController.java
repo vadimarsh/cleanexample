@@ -1,10 +1,11 @@
 package presentation.gui.mainwindow;
 
+import domain.usecase.discipline.CloseDisciplineUseCase;
+import domain.usecase.task.*;
 import presentation.config.GUISwingConfig;
 import domain.entity.Discipline;
 import domain.entity.Task;
 import domain.usecase.discipline.GetAllDisciplinesUseCase;
-import domain.usecase.task.CreateTaskUseCase;
 import presentation.gui.discwindow.DisciplinesWindowController;
 import presentation.gui.discwindow.DisciplinesWindowView;
 
@@ -12,29 +13,47 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.List;
 
 public class MainWindowController {
-    private MainWindowView view;
+    GUISwingConfig config;
+    private final MainWindowView view;
     private MainTableModel mainTableModel;
+    private boolean showClosedTasks; // флажок для определеления состояния таблицы
 
-    private GUISwingConfig config;
+    // слушатели
+    private MenuListener menuListener;
+    private ButtonListener buttonListener;
 
+    // доступные посредством окна UseCase
     private GetAllDisciplinesUseCase getAllDisciplinesUseCase;
     private CreateTaskUseCase createTaskUseCase;
+    private GetUnclosedTasks getUnclosedTasksUseCase;
+    private GetAllTasksUseCase getAllTasksUseCase;
+    private MarkDoneTaskUseCase markDoneTaskUseCase;
+    private CloseDisciplineUseCase closeDisciplineUseCase;
+    private SetDeadLineUseCase setDeadLineUseCase;
 
-    public MainWindowController(GUISwingConfig guiSwingConfig, MainWindowView mainWindowView){
-        this.config = guiSwingConfig;
+    public MainWindowController(GUISwingConfig config, MainWindowView mainWindowView){
+        this.config = config;
         this.view = mainWindowView;
+        this.menuListener = new MenuListener();
+        this.buttonListener = new ButtonListener();
+        this.showClosedTasks = false;
 
-        createTaskUseCase = guiSwingConfig.createTask();
-        getAllDisciplinesUseCase = guiSwingConfig.getAllDiscliplines();
+        createTaskUseCase = config.createTask();
+        getAllDisciplinesUseCase = config.getAllDiscliplines();
+        getUnclosedTasksUseCase = config.getUnclosedTasks();
+        getAllTasksUseCase = config.getAllTasks();
+        markDoneTaskUseCase = config.markDoneTask();
+        closeDisciplineUseCase = config.closeDiscipline();
+        setDeadLineUseCase = config.setDeadLine();
 
-
-        setTableModel();
+        refreshTableModel();
         setDisciplinesList();
         setControllers();
-
     }
 
     private void setDisciplinesList() {
@@ -46,26 +65,16 @@ public class MainWindowController {
 
     }
 
-    public void setControllers(){
-        ActionListener actionListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createTaskBtClick();
-            }
-        };
-        view.getButAddTask().addActionListener(actionListener);
+    private void setControllers(){
+        view.getButAddTask().addActionListener(buttonListener);
+        view.getMiDisciplines().addActionListener(menuListener);
+        view.getMiUnclosedTasks().addActionListener(menuListener);
 
-        view.getMiDisciplines().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DisciplinesWindowController(config,new DisciplinesWindowView(view.getMainFrame()));
-            }
-        });
         view.getMainFrame().addWindowListener(new WindowAdapter() {
             @Override
             public void windowActivated(WindowEvent e) {
                 System.out.println("window activated");
-                setTableModel();
+                refreshTableModel();
                 setDisciplinesList();
             }
         });
@@ -74,13 +83,23 @@ public class MainWindowController {
 
     private void createTaskBtClick() {
         Discipline discipline = (Discipline) getView().getjlDiscipline().getSelectedItem();
-        Task task = new Task(5, view.getTfTaskTitle().getText(),false, 100L,discipline);
+        Task task = null;
+        try {
+            task = new Task(0, view.getTfTaskTitle().getText(),false, DateFormat.getDateInstance(DateFormat.SHORT).parse(view.TfDeadLine().getText()).getTime(),discipline);
+        } catch (ParseException e) {
+            System.err.println("неверный формат даты");
+        }
         createTaskUseCase.invoke(task);
         mainTableModel.fireTableDataChanged();
     }
 
-    public void setTableModel(){
-        mainTableModel = new MainTableModel(config);
+    public void refreshTableModel(){
+        if(showClosedTasks) {
+            mainTableModel = new MainTableModel(this, getUnclosedTasksUseCase.invoke());
+        }
+        else{
+            mainTableModel = new MainTableModel(this, getAllTasksUseCase.invoke());
+        }
         view.getTableTasks().setModel(mainTableModel);
     }
 
@@ -89,8 +108,38 @@ public class MainWindowController {
         return view;
     }
 
-    public void setView(MainWindowView view) {
-        this.view = view;
+    public boolean closeTask(Task task){
+        if (!task.isClosed()) {
+            markDoneTaskUseCase.invoke(task);
+            Discipline discipline = task.getDiscipline();
+            closeDisciplineUseCase.invoke(discipline);
+            refreshTableModel();
+            return true;
+        }
+        return false;
     }
 
+    public void updateTask(Task task) {
+        setDeadLineUseCase.invoke(task);
+    }
+
+    private class MenuListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Object o = e.getSource();
+            if (o.equals(getView().getMiUnclosedTasks())) {
+                showClosedTasks=getView().getMiUnclosedTasks().getState();
+                refreshTableModel();
+            } else if (o.equals(getView().getMiDisciplines())) {
+                new DisciplinesWindowController(config, new DisciplinesWindowView(view.getMainFrame()));
+            }
+        }
+    }
+
+    private class ButtonListener implements ActionListener{
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createTaskBtClick();
+            }
+    }
 }

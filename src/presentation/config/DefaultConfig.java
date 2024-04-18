@@ -1,7 +1,7 @@
 package presentation.config;
 
-import adapter.repository.InMemoryDiscipRepository;
-import adapter.repository.InMemoryTaskRepository;
+import data.repository.inmemory.InMemoryDiscipRepository;
+import data.repository.inmemory.InMemoryTaskRepository;
 import domain.port.DisciplineRepository;
 import domain.port.TaskRepository;
 import domain.usecase.discipline.CreateDisciplineUseCase;

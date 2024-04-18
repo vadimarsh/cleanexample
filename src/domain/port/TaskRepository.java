@@ -12,4 +12,6 @@ public interface TaskRepository {
     Task update(Task task);
 
     List<Task> getTasks();
+
+    List<Task> getUnclosedTasks();
 }

@@ -1,4 +1,4 @@
-package adapter.repository;
+package data.repository.inmemory;
 
 import domain.entity.Discipline;
 import domain.entity.Task;
@@ -12,6 +12,8 @@ public class InMemoryTaskRepository implements TaskRepository {
 
     @Override
     public Task create(Task task) {
+            int id = this.tasks.size();
+            task = new Task(id,task.getTitle(),task.isClosed(),task.getDeadline(),task.getDiscipline());
             tasks.add(task);
         return task;
     }
@@ -29,12 +31,25 @@ public class InMemoryTaskRepository implements TaskRepository {
 
     @Override
     public Task update(Task task) {
-        task.setClosed(true);
-        return task;
+        Task updatedTask = new Task(task.getId(),task.getTitle(),task.isClosed(),task.getDeadline(),task.getDiscipline());
+        int oldTaskIndex = tasks.indexOf(task);
+        tasks.set(oldTaskIndex,updatedTask);
+        return updatedTask;
     }
 
     @Override
     public List<Task> getTasks() {
         return tasks;
+    }
+
+    @Override
+    public List<Task> getUnclosedTasks() {
+        List<Task> unclosedTasks= new ArrayList();
+        for (int i = 0; i < tasks.size(); i++) {
+            if(!tasks.get(i).isClosed()){
+                unclosedTasks.add(tasks.get(i));
+            }
+        }
+        return unclosedTasks;
     }
 }
