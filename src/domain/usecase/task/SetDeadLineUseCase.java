@@ -9,7 +9,8 @@ public class SetDeadLineUseCase {
     public SetDeadLineUseCase(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
-    public Task invoke(final Task task){
+    public Task invoke(Task task, long deadline){
+            task.setDeadline(deadline);
             return taskRepository.update(task);
     }
 }

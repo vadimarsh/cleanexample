@@ -18,7 +18,7 @@ public class InFileTaskStorage {
             reader = new BufferedReader(new FileReader(TASKS_FNAME));
             while (reader.ready()){
                 String readedline =reader.readLine();
-                String[] splitedLine = readedline.split("|");
+                String[] splitedLine = readedline.split("\\|");
                 int taskID = Integer.parseInt(splitedLine[0]);
                 String taskTitle = splitedLine[1];
                 String taskDeadline = splitedLine[2];
@@ -44,6 +44,7 @@ public class InFileTaskStorage {
                     String taskStatus = task.getStatus();
                     int disciplineId = task.getDiscipline_id();
                     writer.write(taskID+"|"+taskTitle+"|"+taskDeadline+"|"+taskStatus+"|"+disciplineId);
+                    writer.newLine();
                 }
             }
             writer.close();
@@ -63,6 +64,7 @@ public class InFileTaskStorage {
         try {
             writer = new BufferedWriter(new FileWriter(TASKS_FNAME,true));
             writer.write(taskID+"|"+taskTitle+"|"+taskDeadline+"|"+taskStatus+"|"+disciplineId);
+            writer.newLine();
             writer.close();
         }
         catch (IOException ex){

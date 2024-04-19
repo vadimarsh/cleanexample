@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 public class TaskDTO {
     private int id;
@@ -24,7 +25,8 @@ public class TaskDTO {
             this.closed = "Открыта";
         }
          DateFormat date = new SimpleDateFormat("dd.MM.yyyy"); // Форматирующий объект даты
-        this.deadline = date.format(new Date(this.deadline)).toString();
+
+        this.deadline = date.format(new Date(task.getDeadline()));
         this.discipline_id = discipline_id;
     }
     public TaskDTO(int id, String name, String deadline, String closed, int discipline_id) {
@@ -38,7 +40,7 @@ public class TaskDTO {
         Task task = null;
         try {
             boolean taskStatus = false;
-            if(this.closed.equals("Закрыта")){
+            if(Objects.equals(this.closed, "Закрыта")){
                 taskStatus = true;
             }
              task = new Task(this.id,this.name,taskStatus,DateFormat.getDateInstance(DateFormat.SHORT).parse(this.deadline).getTime(), discipline);

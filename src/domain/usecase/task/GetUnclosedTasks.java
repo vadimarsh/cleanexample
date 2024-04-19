@@ -13,6 +13,6 @@ public class GetUnclosedTasks {
     private final TaskRepository taskRepository;
     public List<Task> invoke(){
 
-        return this.taskRepository.getTasks();
+        return this.taskRepository.getUnclosedTasks();
     }
 }

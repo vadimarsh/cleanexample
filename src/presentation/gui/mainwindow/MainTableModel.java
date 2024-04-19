@@ -92,8 +92,8 @@ public class MainTableModel extends AbstractTableModel {
             Task task = tasks.get(rowIndex);
             if (!task.isClosed()) {
                 Date date = (Date)aValue;
-                task.setDeadline(date.getTime());
-                controller.updateTask(task);
+//                task.setDeadline(date.getTime());
+                controller.updateDeadlineTask(task, date.getTime());
             }
 
         }

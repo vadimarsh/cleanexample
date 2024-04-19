@@ -7,6 +7,7 @@ import domain.port.DisciplineRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class InFileDiscipRepository implements DisciplineRepository {
    private InFileDisciplineStorage storage;
@@ -16,6 +17,7 @@ public class InFileDiscipRepository implements DisciplineRepository {
     public InFileDiscipRepository(InFileDisciplineStorage storage, InFileIDGenerator idGenerator){
        this.storage=storage;
        this.idGenerator=idGenerator;
+       disciplines=getAllDisciplines();
     }
 
 
@@ -37,6 +39,20 @@ public class InFileDiscipRepository implements DisciplineRepository {
     public void update(Discipline discipline) {
         disciplines.set(disciplines.indexOf(discipline),discipline);
         storage.saveAll(disciplines);
+    }
+
+    @Override
+    public Discipline getDisciplineByID(int id) {
+        Discipline discipline = null;
+        for (int i = 0; i < disciplines.size(); i++) {
+             discipline = disciplines.get(i);
+            if(discipline.getId()==id){
+                return disciplines.get(i);
+            }
+
+        }
+        System.out.println(id);
+        return null;
     }
 
 }

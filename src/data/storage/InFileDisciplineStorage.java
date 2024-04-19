@@ -4,6 +4,7 @@ import domain.entity.Discipline;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class InFileDisciplineStorage {
@@ -16,9 +17,8 @@ public class InFileDisciplineStorage {
         try {
             reader = new BufferedReader(new FileReader(DISCIPLINES_FNAME));
             while (reader.ready()){
-                int id =Integer.parseInt(reader.readLine());
                 String readedline =reader.readLine();
-                String[] splitedLine = readedline.split("|");
+                String[] splitedLine = readedline.split("\\|");
                 int disciplineID = Integer.parseInt(splitedLine[0]);
                 String disciplineTitle = splitedLine[1];
                 int disciplineSemestr = Integer.parseInt(splitedLine[2]);
@@ -45,12 +45,12 @@ public class InFileDisciplineStorage {
                     String disciplineTitle = discipline.getName();
                     int disciplineSemestr = discipline.getSemestr();
                     String disciplineStatusRaw = "Долг";
-                    boolean disciplineStatus = discipline.isClosed();
                     if (discipline.isClosed())
                     {
                         disciplineStatusRaw = "Закрыто";
                     }
                     writer.write(disciplineID+"|"+disciplineTitle+"|"+disciplineSemestr+"|"+disciplineStatusRaw);
+                    writer.newLine();
                 }
             }
             writer.close();
@@ -65,7 +65,6 @@ public class InFileDisciplineStorage {
         String disciplineTitle = discipline.getName();
         int disciplineSemestr = discipline.getSemestr();
         String disciplineStatusRaw = "Долг";
-        boolean disciplineStatus = discipline.isClosed();
         if (discipline.isClosed())
         {
             disciplineStatusRaw = "Закрыто";
@@ -73,6 +72,7 @@ public class InFileDisciplineStorage {
         try {
             writer = new BufferedWriter(new FileWriter(DISCIPLINES_FNAME,true));
             writer.write(disciplineID + "|" + disciplineTitle + "|" + disciplineSemestr + "|" + disciplineStatusRaw);
+            writer.newLine();
             writer.close();
         }
         catch (IOException ex){

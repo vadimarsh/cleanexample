@@ -10,7 +10,7 @@ public class MarkDoneTaskUseCase {
         this.taskRepository = taskRepository;
     }
     public Task invoke(final Task task){
-        task.setClosed(true);
+        task.changeState();
         return taskRepository.update(task);
     }
 }

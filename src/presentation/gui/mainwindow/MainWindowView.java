@@ -23,11 +23,6 @@ public class MainWindowView {
     private JFormattedTextField tfDeadLine;
     private JComboBox cbDiscipline;
 
-
-
-
-
-
     public MainWindowView(){
         mainFrame = new JFrame("Список задач");
 
@@ -56,8 +51,10 @@ public class MainWindowView {
         tfTaskTitle = new JTextField(40);
         DateFormat date = new SimpleDateFormat("dd.MM.yyyy"); // Форматирующий объект даты
         DateFormatter dateFormatter = new DateFormatter(date);
+
         dateFormatter.setAllowsInvalid(false);
         dateFormatter.setOverwriteMode(true);
+
         tfDeadLine = new JFormattedTextField(dateFormatter);
         tfDeadLine.setColumns(10);
         tfDeadLine.setValue(new Date());

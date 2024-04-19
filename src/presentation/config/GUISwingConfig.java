@@ -1,7 +1,10 @@
 package presentation.config;
 
-import data.repository.inmemory.InMemoryDiscipRepository;
-import data.repository.inmemory.InMemoryTaskRepository;
+import data.repository.infile.InFileDiscipRepository;
+import data.repository.infile.InFileTaskRepository;
+import data.storage.InFileDisciplineStorage;
+import data.storage.InFileIDGenerator;
+import data.storage.InFileTaskStorage;
 import domain.port.DisciplineRepository;
 import domain.port.TaskRepository;
 import domain.usecase.discipline.RefreshDisciplineStatusUseCase;
@@ -10,9 +13,11 @@ import domain.usecase.discipline.GetAllDisciplinesUseCase;
 import domain.usecase.task.*;
 
 public class GUISwingConfig {
-    private final TaskRepository taskRepository = new InMemoryTaskRepository();
-    private final DisciplineRepository disciplineRepository = new InMemoryDiscipRepository();
 
+    private final InFileIDGenerator disciplinesIDGenerator= new InFileIDGenerator("disciplines.key");
+    private final InFileIDGenerator tasksIDGenerator= new InFileIDGenerator("tasks.key");
+    private final DisciplineRepository disciplineRepository = new InFileDiscipRepository(new InFileDisciplineStorage(),disciplinesIDGenerator);
+    private final TaskRepository taskRepository = new InFileTaskRepository(new InFileTaskStorage(),disciplineRepository,disciplinesIDGenerator);
 
     public CreateTaskUseCase createTask(){
         return new CreateTaskUseCase(taskRepository);

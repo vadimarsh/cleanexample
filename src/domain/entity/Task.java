@@ -40,8 +40,8 @@ public class Task {
         return closed;
     }
 
-    public void setClosed(boolean closed) {
-        this.closed = closed;
+    public void changeState() {
+        this.closed = !this.closed;
     }
 
     public long getDeadline() {

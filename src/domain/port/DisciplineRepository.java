@@ -11,4 +11,6 @@ public interface DisciplineRepository {
 
     void update(Discipline discipline);
 
+    Discipline getDisciplineByID(int id);
+
 }

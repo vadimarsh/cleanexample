@@ -73,7 +73,6 @@ public class MainWindowController {
         view.getMainFrame().addWindowListener(new WindowAdapter() {
             @Override
             public void windowActivated(WindowEvent e) {
-                System.out.println("window activated");
                 refreshTableModel();
                 setDisciplinesList();
             }
@@ -89,7 +88,7 @@ public class MainWindowController {
         } catch (ParseException e) {
             System.err.println("неверный формат даты");
         }
-        createTaskUseCase.invoke(task); // добавляем новую задачу
+        task = createTaskUseCase.invoke(task); // добавляем новую задачу
         //вызываем функцию бизнес-логики "обновить статус дисциплины", чтобы опять пометить дисциплину как нерешенную, на тот случай если она была уже закрыта
         refreshDisciplineStatusUseCase.invoke(task.getDiscipline());
         mainTableModel.fireTableDataChanged();
@@ -112,7 +111,7 @@ public class MainWindowController {
 
     public boolean closeTask(Task task){
         if (!task.isClosed()) {
-            markDoneTaskUseCase.invoke(task); //вызываем функцию бизнес-логики "закрыть задачу"
+            task=markDoneTaskUseCase.invoke(task); //вызываем функцию бизнес-логики "закрыть задачу"
             Discipline discipline = task.getDiscipline();
             //вызываем функцию бизнес-логики "обновить статус дисциплины" на тот случай если все задачи в этой дисциплине были уже решены
             refreshDisciplineStatusUseCase.invoke(discipline);
@@ -122,9 +121,11 @@ public class MainWindowController {
         return false;
     }
 
-    public void updateTask(Task task) {
-        setDeadLineUseCase.invoke(task);
+    public void updateDeadlineTask(Task task, long deadline) {
+        task=setDeadLineUseCase.invoke(task,deadline);
+        refreshTableModel();
     }
+
 
     private class MenuListener implements ActionListener{
         @Override

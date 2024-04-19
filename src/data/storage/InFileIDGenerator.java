@@ -10,6 +10,7 @@ public class InFileIDGenerator {
     public InFileIDGenerator(String fname){
         try {
             this.fname = fname;
+           // (new DataOutputStream(new FileOutputStream(this.fname))).writeInt(0);
             reader = new DataInputStream(new FileInputStream(this.fname));
             id=reader.readInt();
             reader.close();
