@@ -13,6 +13,6 @@ public class GetAllDisciplinesUseCase {
     private final DisciplineRepository disciplineRepository;
 
     public List<Discipline> invoke(){
-        return this.disciplineRepository.getDisciplines();
+        return this.disciplineRepository.getAllDisciplines();
     }
 }

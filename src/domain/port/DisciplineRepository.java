@@ -7,9 +7,8 @@ import java.util.List;
 public interface DisciplineRepository {
     Discipline create (Discipline discipline);
 
-    List<Discipline> getDisciplines();
+    List<Discipline> getAllDisciplines();
 
     void update(Discipline discipline);
 
-    List<Discipline> getUnclosedDisciplines();
 }

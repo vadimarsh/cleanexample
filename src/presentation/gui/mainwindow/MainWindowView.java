@@ -76,10 +76,8 @@ public class MainWindowView {
         JLabel jLabelDiscipline = new JLabel("Предмет:");
         JLabel jLabelDeadline = new JLabel("Дедлайн:");
 
-        //jLabelTask.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        //tfTaskTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         Box taskTitleBox= new Box(BoxLayout.X_AXIS);
-        //taskTitleBox.setAlignmentY(Component.CENTER_ALIGNMENT);
         taskTitleBox.add(Box.createRigidArea(new Dimension(40,0)));
         taskTitleBox.add(jLabelTask);
         taskTitleBox.add(Box.createRigidArea(new Dimension(10,0)));

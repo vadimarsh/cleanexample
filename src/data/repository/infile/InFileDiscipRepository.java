@@ -1,48 +1,42 @@
 package data.repository.infile;
 
+import data.storage.InFileDisciplineStorage;
+import data.storage.InFileIDGenerator;
 import domain.entity.Discipline;
 import domain.port.DisciplineRepository;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class InFileDiscipRepository implements DisciplineRepository {
-    private final String disciplinesFName = "disciplines.ps";
-    private Reader reader;
-    private Writer writer;
+   private InFileDisciplineStorage storage;
+   private InFileIDGenerator idGenerator;
+   private List<Discipline> disciplines = new ArrayList<>();
 
-    public InFileDiscipRepository(){
-        try {
-            reader = new BufferedReader(new FileReader(disciplinesFName));
-            writer = new BufferedWriter(new FileWriter(disciplinesFName,false));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public InFileDiscipRepository(InFileDisciplineStorage storage, InFileIDGenerator idGenerator){
+       this.storage=storage;
+       this.idGenerator=idGenerator;
     }
 
-    private final List<Discipline> disciplines = new ArrayList<>();
+
     @Override
     public Discipline create(Discipline discipline) {
+        Discipline newDiscipline = new Discipline(idGenerator.generate(),discipline.getName(), discipline.isClosed(), discipline.getSemestr());
         this.disciplines.add(discipline);
-        return discipline;
+        this.storage.save(newDiscipline);
+        return newDiscipline;
     }
 
     @Override
-    public List<Discipline> getDisciplines() {
+    public List<Discipline> getAllDisciplines() {
+        disciplines = storage.readAll();
         return disciplines;
     }
 
     @Override
     public void update(Discipline discipline) {
         disciplines.set(disciplines.indexOf(discipline),discipline);
+        storage.saveAll(disciplines);
     }
 
-    @Override
-    public List<Discipline> getUnclosedDisciplines() {
-
-        return null;
-    }
 }

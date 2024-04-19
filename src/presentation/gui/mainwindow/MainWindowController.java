@@ -18,7 +18,7 @@ import java.text.ParseException;
 import java.util.List;
 
 public class MainWindowController {
-    GUISwingConfig config;
+    private GUISwingConfig config;
     private final MainWindowView view;
     private MainTableModel mainTableModel;
     private boolean showClosedTasks; // флажок для определеления состояния таблицы
