@@ -1,7 +1,6 @@
 package data.storage;
 
 import data.storage.dto.TaskDTO;
-import domain.entity.Discipline;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -11,6 +10,20 @@ public class InFileTaskStorage {
     private static final String TASKS_FNAME = "tasks.ps";
     private BufferedReader reader;
     private BufferedWriter writer;
+
+    public InFileTaskStorage(InFileIDGenerator idGenerator) {
+        this.idGenerator = idGenerator;
+        File file = new File(TASKS_FNAME);
+        if(!file.isFile()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private InFileIDGenerator idGenerator;
     public List<TaskDTO> readAll(){
         List<TaskDTO> readedDisciplines = new ArrayList<>();
         TaskDTO task = null;
@@ -38,12 +51,7 @@ public class InFileTaskStorage {
             writer = new BufferedWriter(new FileWriter(TASKS_FNAME,false));
             for (TaskDTO task : tasks) {
                 {
-                    int taskID = task.getId();
-                    String taskTitle = task.getName();
-                    String taskDeadline = task.getDeadline();
-                    String taskStatus = task.getStatus();
-                    int disciplineId = task.getDiscipline_id();
-                    writer.write(taskID+"|"+taskTitle+"|"+taskDeadline+"|"+taskStatus+"|"+disciplineId);
+                    writer.write(task.getId()+"|"+task.getName()+"|"+task.getDeadline()+"|"+task.getStatus()+"|"+task.getDiscipline_id());
                     writer.newLine();
                 }
             }
@@ -54,21 +62,17 @@ public class InFileTaskStorage {
         }
     }
 
-    public void save(TaskDTO task) {
-        int taskID = task.getId();
-        String taskTitle = task.getName();
-        String taskDeadline = task.getDeadline();
-        String taskStatus = task.getStatus();
-        int disciplineId = task.getDiscipline_id();
-
+    public TaskDTO save(TaskDTO task) {
+        task.setId(idGenerator.generate());
         try {
             writer = new BufferedWriter(new FileWriter(TASKS_FNAME,true));
-            writer.write(taskID+"|"+taskTitle+"|"+taskDeadline+"|"+taskStatus+"|"+disciplineId);
+            writer.write(task.getId()+"|"+task.getName()+"|"+task.getDeadline()+"|"+task.getStatus()+"|"+task.getDiscipline_id());
             writer.newLine();
             writer.close();
         }
         catch (IOException ex){
             throw new RuntimeException(ex);
         }
+        return task;
     }
 }

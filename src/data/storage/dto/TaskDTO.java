@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.Objects;
 
 public class TaskDTO {
+
+
     private int id;
     private String name;
     private String closed;
@@ -66,5 +68,8 @@ public class TaskDTO {
 
     public String getDeadline() {
         return deadline;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -10,7 +10,12 @@ public class InFileIDGenerator {
     public InFileIDGenerator(String fname){
         try {
             this.fname = fname;
-           // (new DataOutputStream(new FileOutputStream(this.fname))).writeInt(0);
+            if(!new File(fname).isFile()){
+                System.out.println("no file");
+                writer = new DataOutputStream(new FileOutputStream(this.fname,false));
+                writer.writeInt(0);
+                writer.close();
+            }
             reader = new DataInputStream(new FileInputStream(this.fname));
             id=reader.readInt();
             reader.close();
@@ -22,6 +27,7 @@ public class InFileIDGenerator {
     }
     public int generate() {
         try {
+            System.out.println("id "+fname+" id="+id);
             writer = new DataOutputStream(new FileOutputStream(fname,false));
             writer.writeInt(id);
             id++;

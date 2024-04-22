@@ -9,10 +9,17 @@ public class Discipline {
 
     @Override
     public String toString() {
-        return name;
+        return "Discipline{" +
+                "hash=" + super.toString() +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", closed=" + closed +
+                ", semestr=" + semestr +
+                '}';
     }
 
     public Discipline(int id, String name, boolean closed, int semestr) {
+
         this.id = id;
         this.name = name;
         this.closed = closed;

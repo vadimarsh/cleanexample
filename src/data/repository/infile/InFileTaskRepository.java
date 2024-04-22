@@ -14,23 +14,18 @@ import java.util.List;
 public class InFileTaskRepository implements TaskRepository {
     private DisciplineRepository disciplineRepository;
     private InFileTaskStorage taskStorage;
-    private InFileIDGenerator idGenerator;
     private List<Task> tasks = new ArrayList<>();
 
-    public InFileTaskRepository(InFileTaskStorage taskstorage, DisciplineRepository disciplineRepository, InFileIDGenerator idGenerator){
+    public InFileTaskRepository(InFileTaskStorage taskstorage, DisciplineRepository disciplineRepository){
        this.taskStorage =taskstorage;
-       this.idGenerator=idGenerator;
        this.disciplineRepository=disciplineRepository;
-
     }
 
     @Override
     public Task create(Task task) {
-        Task newTask = new Task(idGenerator.generate(),task.getTitle(), task.isClosed(), task.getDeadline(),task.getDiscipline());
+        TaskDTO taskDTO = new TaskDTO(task,task.getDiscipline().getId());
+        Task newTask =this.taskStorage.save(taskDTO).toTask(task.getDiscipline());
         this.tasks.add(newTask);
-        TaskDTO taskDTO = new TaskDTO(newTask,newTask.getDiscipline().getId());
-        this.taskStorage.save(taskDTO);
-
         return newTask;
     }
     @Override

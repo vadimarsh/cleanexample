@@ -16,8 +16,8 @@ public class GUISwingConfig {
 
     private final InFileIDGenerator disciplinesIDGenerator= new InFileIDGenerator("disciplines.key");
     private final InFileIDGenerator tasksIDGenerator= new InFileIDGenerator("tasks.key");
-    private final DisciplineRepository disciplineRepository = new InFileDiscipRepository(new InFileDisciplineStorage(),disciplinesIDGenerator);
-    private final TaskRepository taskRepository = new InFileTaskRepository(new InFileTaskStorage(),disciplineRepository,disciplinesIDGenerator);
+    private final DisciplineRepository disciplineRepository = new InFileDiscipRepository(new InFileDisciplineStorage(disciplinesIDGenerator));
+    private final TaskRepository taskRepository = new InFileTaskRepository(new InFileTaskStorage(tasksIDGenerator),disciplineRepository);
 
     public CreateTaskUseCase createTask(){
         return new CreateTaskUseCase(taskRepository);

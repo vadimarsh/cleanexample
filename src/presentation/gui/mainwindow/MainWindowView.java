@@ -1,5 +1,6 @@
 package presentation.gui.mainwindow;
 
+import domain.entity.Discipline;
 import presentation.gui.JDateCellEditor;
 
 import javax.swing.*;
@@ -21,7 +22,7 @@ public class MainWindowView {
 
     private JTextField tfTaskTitle;
     private JFormattedTextField tfDeadLine;
-    private JComboBox cbDiscipline;
+    private JComboBox<Discipline> cbDiscipline;
 
     public MainWindowView(){
         mainFrame = new JFrame("Список задач");
@@ -60,7 +61,7 @@ public class MainWindowView {
         tfDeadLine.setValue(new Date());
         tfDeadLine.setPreferredSize(new Dimension(30,30));
         cbDiscipline = new JComboBox();
-        cbDiscipline.setSize(new Dimension(100,30));
+
     }
 
     private void placeComponents() {

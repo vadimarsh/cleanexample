@@ -18,11 +18,11 @@ public class RefreshDisciplineStatusUseCase {
     public Discipline invoke(final Discipline discipline){
        if(checkTasks(discipline)){
            discipline.setClosed(true);
-           disciplineRepository.update(discipline);
+           // disciplineRepository.update(discipline);
        }else{
            discipline.setClosed(false);
        }
-       disciplineRepository.update(discipline);
+        disciplineRepository.update(discipline);
        return discipline;
     }
     private boolean checkTasks(final Discipline discipline){

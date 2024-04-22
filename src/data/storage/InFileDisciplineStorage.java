@@ -1,19 +1,30 @@
 package data.storage;
 
-import domain.entity.Discipline;
+import data.storage.dto.DisciplineDTO;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class InFileDisciplineStorage {
     private static final String DISCIPLINES_FNAME = "disciplines.ps";
     private BufferedReader reader;
     private BufferedWriter writer;
-    public List<Discipline> readAll(){
-        List<Discipline> readedDisciplines = new ArrayList<>();
-        Discipline discipline = null;
+    private InFileIDGenerator idGenerator;
+    public InFileDisciplineStorage(InFileIDGenerator idGenerator){
+           this.idGenerator = idGenerator;
+           File file = new File(DISCIPLINES_FNAME);
+           if(!file.isFile()){
+               try {
+                   file.createNewFile();
+               } catch (IOException e) {
+                   throw new RuntimeException(e);
+               }
+           }
+    }
+    public List<DisciplineDTO> readAll(){
+        List<DisciplineDTO> readedDisciplines = new ArrayList<>();
+        DisciplineDTO disciplineDTO;
         try {
             reader = new BufferedReader(new FileReader(DISCIPLINES_FNAME));
             while (reader.ready()){
@@ -21,14 +32,12 @@ public class InFileDisciplineStorage {
                 String[] splitedLine = readedline.split("\\|");
                 int disciplineID = Integer.parseInt(splitedLine[0]);
                 String disciplineTitle = splitedLine[1];
-                int disciplineSemestr = Integer.parseInt(splitedLine[2]);
+                String disciplineSemestr = splitedLine[2];
                 String disciplineStatusRaw = splitedLine[3];
-                boolean disciplineStatus = false;
-                if(disciplineStatusRaw.equals("Закрыто")){
-                    disciplineStatus = true;
-                }
-                discipline = new Discipline(disciplineID, disciplineTitle,disciplineStatus,disciplineSemestr);
-                readedDisciplines.add(discipline);
+
+                disciplineDTO = new DisciplineDTO(disciplineID,disciplineTitle,disciplineSemestr,disciplineStatusRaw);
+               // discipline = new Discipline(disciplineID, disciplineTitle,disciplineStatus,disciplineSemestr);
+                readedDisciplines.add(disciplineDTO);
             }
 
         } catch (IOException e) {
@@ -36,20 +45,12 @@ public class InFileDisciplineStorage {
         }
         return readedDisciplines;
     }
-    public void saveAll(List<Discipline> disciplines) {
+    public void saveAll(List<DisciplineDTO> disciplines) {
         try {
             writer = new BufferedWriter(new FileWriter(DISCIPLINES_FNAME,false));
-            for (Discipline discipline : disciplines) {
+            for (DisciplineDTO discipline : disciplines) {
                 {
-                    int disciplineID = discipline.getId();
-                    String disciplineTitle = discipline.getName();
-                    int disciplineSemestr = discipline.getSemestr();
-                    String disciplineStatusRaw = "Долг";
-                    if (discipline.isClosed())
-                    {
-                        disciplineStatusRaw = "Закрыто";
-                    }
-                    writer.write(disciplineID+"|"+disciplineTitle+"|"+disciplineSemestr+"|"+disciplineStatusRaw);
+                    writer.write(discipline.getId()+"|"+discipline.getName()+"|"+discipline.getSemestr()+"|"+discipline.getClosed());
                     writer.newLine();
                 }
             }
@@ -60,23 +61,18 @@ public class InFileDisciplineStorage {
         }
     }
 
-    public void save(Discipline discipline) {
-        int disciplineID = discipline.getId();
-        String disciplineTitle = discipline.getName();
-        int disciplineSemestr = discipline.getSemestr();
-        String disciplineStatusRaw = "Долг";
-        if (discipline.isClosed())
-        {
-            disciplineStatusRaw = "Закрыто";
-        }
+    public DisciplineDTO save(DisciplineDTO discipline) {
+        discipline.setId(idGenerator.generate());
+        System.out.println("new id = "+discipline.getId());
         try {
             writer = new BufferedWriter(new FileWriter(DISCIPLINES_FNAME,true));
-            writer.write(disciplineID + "|" + disciplineTitle + "|" + disciplineSemestr + "|" + disciplineStatusRaw);
+            writer.write(discipline.getId() + "|" + discipline.getName() + "|" + discipline.getSemestr() + "|" + discipline.getClosed());
             writer.newLine();
             writer.close();
         }
         catch (IOException ex){
             throw new RuntimeException(ex);
         }
+        return discipline;
     }
 }

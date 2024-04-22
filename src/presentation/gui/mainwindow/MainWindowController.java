@@ -9,6 +9,8 @@ import domain.usecase.discipline.GetAllDisciplinesUseCase;
 import presentation.gui.discwindow.DisciplinesWindowController;
 import presentation.gui.discwindow.DisciplinesWindowView;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -57,11 +59,14 @@ public class MainWindowController {
     }
 
     private void setDisciplinesList() {
-        view.getjlDiscipline().removeAllItems();
+        //view.getjlDiscipline().removeAllItems();
+
         List<Discipline> allDisciplines = getAllDisciplinesUseCase.invoke();
-        for (int i = 0; i < allDisciplines.size(); i++) {
-            view.getjlDiscipline().addItem(allDisciplines.get(i));
-        }
+        view.getjlDiscipline().setModel(new DisciplComboBoxModel(allDisciplines));
+        view.getjlDiscipline().revalidate();
+        //for (int i = 0; i < allDisciplines.size(); i++) {
+        //    view.getjlDiscipline().addItem(allDisciplines.get(i).getName());
+        //}
 
     }
 
@@ -81,17 +86,20 @@ public class MainWindowController {
     }
 
     private void createTaskBtClick() {
-        Discipline discipline = (Discipline) getView().getjlDiscipline().getSelectedItem();
-        Task task = null;
-        try {
-            task = new Task(0, view.getTfTaskTitle().getText(),false, DateFormat.getDateInstance(DateFormat.SHORT).parse(view.TfDeadLine().getText()).getTime(),discipline);
-        } catch (ParseException e) {
-            System.err.println("неверный формат даты");
+        DisciplComboBoxModel model = (DisciplComboBoxModel) getView().getjlDiscipline().getModel();
+        Discipline discipline = model.getSelectedDiscipline();
+        if(discipline!=null) {
+            Task task = null;
+            try {
+                task = new Task(0, view.getTfTaskTitle().getText(), false, DateFormat.getDateInstance(DateFormat.SHORT).parse(view.TfDeadLine().getText()).getTime(), discipline);
+            } catch (ParseException e) {
+                System.err.println("неверный формат даты");
+            }
+            task = createTaskUseCase.invoke(task); // добавляем новую задачу
+            //вызываем функцию бизнес-логики "обновить статус дисциплины", чтобы опять пометить дисциплину как нерешенную, на тот случай если она была уже закрыта
+            refreshDisciplineStatusUseCase.invoke(task.getDiscipline());
+            mainTableModel.fireTableDataChanged();
         }
-        task = createTaskUseCase.invoke(task); // добавляем новую задачу
-        //вызываем функцию бизнес-логики "обновить статус дисциплины", чтобы опять пометить дисциплину как нерешенную, на тот случай если она была уже закрыта
-        refreshDisciplineStatusUseCase.invoke(task.getDiscipline());
-        mainTableModel.fireTableDataChanged();
     }
 
     public void refreshTableModel(){

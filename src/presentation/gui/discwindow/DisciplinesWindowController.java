@@ -31,7 +31,7 @@ public class DisciplinesWindowController {
         this.view.getButAddDiscipline().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Discipline discipline = new Discipline(5,view.getTfDisciplineTitle().getText(),false, Integer.parseInt(view.getTfSemestr().getText()));
+                Discipline discipline = new Discipline(-1,view.getTfDisciplineTitle().getText(),false, Integer.parseInt(view.getTfSemestr().getText()));
                 createDisciplineUseCase.invoke(discipline);
                 disciplinesTableModel.fireTableDataChanged();
             }
