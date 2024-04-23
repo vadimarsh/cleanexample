@@ -1,4 +1,4 @@
-package presentation.gui;
+package presentation.gui.components;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;

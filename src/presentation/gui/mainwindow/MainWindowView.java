@@ -1,7 +1,7 @@
 package presentation.gui.mainwindow;
 
 import domain.entity.Discipline;
-import presentation.gui.JDateCellEditor;
+import presentation.gui.components.JDateCellEditor;
 
 import javax.swing.*;
 import javax.swing.text.DateFormatter;
