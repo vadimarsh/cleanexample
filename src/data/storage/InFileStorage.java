@@ -1,5 +1,6 @@
 package data.storage;
 
+import data.repository.Storage;
 import data.storage.dto.DisciplineDTO;
 import data.storage.dto.TaskDTO;
 

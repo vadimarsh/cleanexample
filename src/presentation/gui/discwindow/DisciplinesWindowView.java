@@ -28,16 +28,34 @@ public class DisciplinesWindowView {
 
     private void placeComponents() {
 
-        BoxLayout boxLayout = new BoxLayout(addDisciplinePanel,BoxLayout.Y_AXIS);
-        addDisciplinePanel.setLayout(boxLayout);
-        addDisciplinePanel.add(tfDisciplineTitle);
-        addDisciplinePanel.add(tfSemestr);
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panel.add(butAddDiscipline);
-        addDisciplinePanel.add(panel);
+        Box disciplineTitleBox = new Box(BoxLayout.X_AXIS);
+        JLabel labelDisciplineTitle = new JLabel("Название:");
+        disciplineTitleBox.add(Box.createRigidArea(new Dimension(20,0)));
+        disciplineTitleBox.add(labelDisciplineTitle);
+        disciplineTitleBox.add(Box.createRigidArea(new Dimension(10,0)));
+        disciplineTitleBox.add(tfDisciplineTitle);
+        disciplineTitleBox.add(Box.createRigidArea(new Dimension(20,0)));
+
+        Box disciplineSemestrBox = new Box(BoxLayout.X_AXIS);
+        JLabel labelDisciplineSemestr = new JLabel("Семестр:");
+        disciplineSemestrBox.add(Box.createRigidArea(new Dimension(40,0)));
+        disciplineSemestrBox.add(labelDisciplineSemestr);
+        disciplineSemestrBox.add(Box.createRigidArea(new Dimension(10,0)));
+        disciplineSemestrBox.add(tfSemestr);
+        disciplineSemestrBox.add(Box.createRigidArea(new Dimension(40,0)));
+
+        addDisciplinePanel.setLayout(new BoxLayout(addDisciplinePanel,BoxLayout.Y_AXIS));
+        addDisciplinePanel.add(disciplineTitleBox);
+        addDisciplinePanel.add(Box.createRigidArea(new Dimension(0,10)));
+        addDisciplinePanel.add(disciplineSemestrBox);
+
+        JPanel wrapButPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        wrapButPanel.add(butAddDiscipline);
+        addDisciplinePanel.add(wrapButPanel);
 
         disciplinesFrame.getContentPane().add(new JScrollPane(tableDisciplines));
         disciplinesFrame.getContentPane().add(addDisciplinePanel, BorderLayout.SOUTH);
+
     }
 
     private void initComponents() {

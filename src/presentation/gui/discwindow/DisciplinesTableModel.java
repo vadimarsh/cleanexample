@@ -24,7 +24,7 @@ public class DisciplinesTableModel extends AbstractTableModel {
         switch (column){
             case 0: return "Предмет";
             case 1: return "Семестр";
-            case 2: return "Завершена";
+            case 2: return "Предмет сдан";
         }
         return super.getColumnName(column);
     }

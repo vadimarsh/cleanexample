@@ -1,7 +1,6 @@
 package data.repository.infile;
 
-import data.storage.InFileStorage;
-import data.storage.Storage;
+import data.repository.Storage;
 import data.storage.dto.DisciplineDTO;
 import data.storage.dto.TaskDTO;
 import domain.entity.Discipline;
