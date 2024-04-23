@@ -1,7 +1,7 @@
 package data.repository.infile;
 
-import data.storage.InFileDisciplineStorage;
 import data.storage.InFileStorage;
+import data.storage.Storage;
 import data.storage.dto.DisciplineDTO;
 import domain.entity.Discipline;
 import domain.port.DisciplineRepository;
@@ -11,10 +11,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class InFileDiscipRepository implements DisciplineRepository {
-   private InFileStorage storage;
+   private Storage storage;
    private List<Discipline> disciplines = new ArrayList<>();
 
-    public InFileDiscipRepository(InFileStorage storage){
+    public InFileDiscipRepository(Storage storage){
        this.storage=storage;
        disciplines=getAllDisciplines();
     }
@@ -22,7 +22,7 @@ public class InFileDiscipRepository implements DisciplineRepository {
     @Override
     public Discipline create(Discipline discipline) {
         DisciplineDTO disciplineDTO = new DisciplineDTO(discipline);
-        Discipline newDiscipline = (this.storage.saveDiscipline(disciplineDTO)).toDiscipline();
+        Discipline newDiscipline = (this.storage.addDiscipline(disciplineDTO)).toDiscipline();
         this.disciplines.add(newDiscipline);
         return newDiscipline;
     }
@@ -40,8 +40,6 @@ public class InFileDiscipRepository implements DisciplineRepository {
 
     @Override
     public void update(Discipline discipline) {
-        System.out.println(discipline);
-        System.out.println(Arrays.toString(disciplines.toArray()));
         disciplines.set(disciplines.indexOf(discipline),discipline);
         List<DisciplineDTO> disciplinesDTO = new ArrayList<>();
         for (int i = 0; i < disciplines.size(); i++) {

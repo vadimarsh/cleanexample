@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InFileStorage {
+public class InFileStorage implements Storage {
     private static final String TASKS_FNAME = "tasks.ps";
     private static final String DISCIPLINES_FNAME = "disciplines.ps";
 
@@ -35,8 +35,9 @@ public class InFileStorage {
         }
     }
 
+    @Override
     public List<TaskDTO> readAllTasks(){
-        List<TaskDTO> readedDisciplines = new ArrayList<>();
+        List<TaskDTO> readedTasks = new ArrayList<>();
         TaskDTO task = null;
         try(BufferedReader reader = new BufferedReader(new FileReader(TASKS_FNAME))) {
             //reader = new BufferedReader(new FileReader(TASKS_FNAME));
@@ -49,14 +50,15 @@ public class InFileStorage {
                 String taskStatusRaw = splitedLine[3];
                 int taskDisciplineId = Integer.parseInt(splitedLine[4]);
                 task = new TaskDTO(taskID,taskTitle,taskDeadline,taskStatusRaw,taskDisciplineId);
-                readedDisciplines.add(task);
+                readedTasks.add(task);
             }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return readedDisciplines;
+        return readedTasks;
     }
+    @Override
     public void saveAllTasks(List<TaskDTO> tasks) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(TASKS_FNAME,false));){
             for (TaskDTO task : tasks) {
@@ -71,7 +73,8 @@ public class InFileStorage {
         }
     }
 
-    public TaskDTO saveTask(TaskDTO task) {
+    @Override
+    public TaskDTO addTask(TaskDTO task) {
         task.setId(idTaskGenerator.generate());
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(TASKS_FNAME,true))) {
             writer.write(task.getId()+"|"+task.getName()+"|"+task.getDeadline()+"|"+task.getStatus()+"|"+task.getDiscipline_id());
@@ -83,6 +86,7 @@ public class InFileStorage {
         return task;
     }
 
+    @Override
     public List<DisciplineDTO> readAllDisciplines(){
         List<DisciplineDTO> readedDisciplines = new ArrayList<>();
         DisciplineDTO disciplineDTO;
@@ -95,7 +99,6 @@ public class InFileStorage {
                 String disciplineSemestr = splitedLine[2];
                 String disciplineStatusRaw = splitedLine[3];
                 disciplineDTO = new DisciplineDTO(disciplineID,disciplineTitle,disciplineSemestr,disciplineStatusRaw);
-                // discipline = new Discipline(disciplineID, disciplineTitle,disciplineStatus,disciplineSemestr);
                 readedDisciplines.add(disciplineDTO);
             }
 
@@ -104,6 +107,7 @@ public class InFileStorage {
         }
         return readedDisciplines;
     }
+    @Override
     public void saveAllDisciplines(List<DisciplineDTO> disciplines) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(DISCIPLINES_FNAME,false))){
             for (DisciplineDTO discipline : disciplines) {
@@ -118,7 +122,8 @@ public class InFileStorage {
         }
     }
 
-    public DisciplineDTO saveDiscipline(DisciplineDTO discipline) {
+    @Override
+    public DisciplineDTO addDiscipline(DisciplineDTO discipline) {
         discipline.setId(idDiscipGenerator.generate());
         System.out.println("new id = "+discipline.getId());
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(DISCIPLINES_FNAME,true))){

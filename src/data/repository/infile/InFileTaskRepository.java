@@ -1,6 +1,7 @@
 package data.repository.infile;
 
 import data.storage.InFileStorage;
+import data.storage.Storage;
 import data.storage.dto.DisciplineDTO;
 import data.storage.dto.TaskDTO;
 import domain.entity.Discipline;
@@ -11,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InFileTaskRepository implements TaskRepository {
-    private InFileStorage storage;
+    private Storage storage;
     private List<Task> tasks = new ArrayList<>();
-    public InFileTaskRepository(InFileStorage storage){
+    public InFileTaskRepository(Storage storage){
        this.storage =storage;
 
     }
@@ -21,7 +22,7 @@ public class InFileTaskRepository implements TaskRepository {
     @Override
     public Task create(Task task) {
         TaskDTO taskDTO = new TaskDTO(task,task.getDiscipline().getId());
-        Task newTask =this.storage.saveTask(taskDTO).toTask(task.getDiscipline());
+        Task newTask =this.storage.addTask(taskDTO).toTask(task.getDiscipline());
         this.tasks.add(newTask);
         return newTask;
     }
@@ -32,7 +33,6 @@ public class InFileTaskRepository implements TaskRepository {
         List<Discipline> disciplines = new ArrayList<>();
         tasks = new ArrayList<>();
         for (int i = 0; i < disciplinesDTO.size(); i++) {
-            int disciplineId = disciplinesDTO.get(i).getId();
             disciplines.add(disciplinesDTO.get(i).toDiscipline());
         }
 

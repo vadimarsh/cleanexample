@@ -18,6 +18,16 @@ public class Discipline {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Discipline){
+            if (this.id==((Discipline)obj).id){
+                return true;
+            }
+        }
+        return super.equals(obj);
+    }
+
     public Discipline(int id, String name, boolean closed, int semestr) {
 
         this.id = id;
