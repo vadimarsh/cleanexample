@@ -121,6 +121,7 @@ public class MainWindowController {
         if (!task.isClosed()) {
             task=markDoneTaskUseCase.invoke(task); //вызываем функцию бизнес-логики "закрыть задачу"
             Discipline discipline = task.getDiscipline();
+            System.out.println("close"+discipline);
             //вызываем функцию бизнес-логики "обновить статус дисциплины" на тот случай если все задачи в этой дисциплине были уже решены
             refreshDisciplineStatusUseCase.invoke(discipline);
             refreshTableModel();

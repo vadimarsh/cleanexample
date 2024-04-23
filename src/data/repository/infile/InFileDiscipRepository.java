@@ -1,6 +1,7 @@
 package data.repository.infile;
 
 import data.storage.InFileDisciplineStorage;
+import data.storage.InFileStorage;
 import data.storage.dto.DisciplineDTO;
 import domain.entity.Discipline;
 import domain.port.DisciplineRepository;
@@ -10,10 +11,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class InFileDiscipRepository implements DisciplineRepository {
-   private InFileDisciplineStorage storage;
+   private InFileStorage storage;
    private List<Discipline> disciplines = new ArrayList<>();
 
-    public InFileDiscipRepository(InFileDisciplineStorage storage){
+    public InFileDiscipRepository(InFileStorage storage){
        this.storage=storage;
        disciplines=getAllDisciplines();
     }
@@ -21,14 +22,14 @@ public class InFileDiscipRepository implements DisciplineRepository {
     @Override
     public Discipline create(Discipline discipline) {
         DisciplineDTO disciplineDTO = new DisciplineDTO(discipline);
-        Discipline newDiscipline = (this.storage.save(disciplineDTO)).toDiscipline();
+        Discipline newDiscipline = (this.storage.saveDiscipline(disciplineDTO)).toDiscipline();
         this.disciplines.add(newDiscipline);
         return newDiscipline;
     }
 
     @Override
     public List<Discipline> getAllDisciplines() {
-        List<DisciplineDTO> disciplineDTOS = storage.readAll();
+        List<DisciplineDTO> disciplineDTOS = storage.readAllDisciplines();
         disciplines = new ArrayList<>();
         for (int i = 0; i < disciplineDTOS.size(); i++) {
             disciplines.add(disciplineDTOS.get(i).toDiscipline());
@@ -46,7 +47,7 @@ public class InFileDiscipRepository implements DisciplineRepository {
         for (int i = 0; i < disciplines.size(); i++) {
             disciplinesDTO.add(new DisciplineDTO(disciplines.get(i)));
         }
-        storage.saveAll(disciplinesDTO);
+        storage.saveAllDisciplines(disciplinesDTO);
     }
 
     @Override

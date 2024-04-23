@@ -1,51 +1,63 @@
 package data.repository.infile;
 
-import data.storage.InFileIDGenerator;
-import data.storage.InFileTaskStorage;
+import data.storage.InFileStorage;
+import data.storage.dto.DisciplineDTO;
 import data.storage.dto.TaskDTO;
 import domain.entity.Discipline;
 import domain.entity.Task;
-import domain.port.DisciplineRepository;
 import domain.port.TaskRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InFileTaskRepository implements TaskRepository {
-    private DisciplineRepository disciplineRepository;
-    private InFileTaskStorage taskStorage;
+    private InFileStorage storage;
     private List<Task> tasks = new ArrayList<>();
+    public InFileTaskRepository(InFileStorage storage){
+       this.storage =storage;
 
-    public InFileTaskRepository(InFileTaskStorage taskstorage, DisciplineRepository disciplineRepository){
-       this.taskStorage =taskstorage;
-       this.disciplineRepository=disciplineRepository;
     }
 
     @Override
     public Task create(Task task) {
         TaskDTO taskDTO = new TaskDTO(task,task.getDiscipline().getId());
-        Task newTask =this.taskStorage.save(taskDTO).toTask(task.getDiscipline());
+        Task newTask =this.storage.saveTask(taskDTO).toTask(task.getDiscipline());
         this.tasks.add(newTask);
         return newTask;
     }
     @Override
     public List<Task> getTasks() {
-        List<TaskDTO> tasksDTO = taskStorage.readAll();
+        List<TaskDTO> tasksDTO = storage.readAllTasks();
+        List<DisciplineDTO> disciplinesDTO = storage.readAllDisciplines();
+        List<Discipline> disciplines = new ArrayList<>();
         tasks = new ArrayList<>();
+        for (int i = 0; i < disciplinesDTO.size(); i++) {
+            int disciplineId = disciplinesDTO.get(i).getId();
+            disciplines.add(disciplinesDTO.get(i).toDiscipline());
+        }
+
         for (int i = 0; i < tasksDTO.size(); i++) {
             int disciplineId = tasksDTO.get(i).getDiscipline_id();
-            tasks.add(tasksDTO.get(i).toTask(disciplineRepository.getDisciplineByID(disciplineId)));
+            tasks.add(tasksDTO.get(i).toTask(findById(disciplines,disciplineId)));
         }
         return tasks;
     }
 
+    private Discipline findById(List<Discipline> disciplines, int id){
+        for (int i = 0; i < disciplines.size(); i++) {
+            if(disciplines.get(i).getId()==id){
+                return disciplines.get(i);
+            }
+        }
+        return null;
+    }
     @Override
     public Task update(Task task) {
         List<TaskDTO> tasksDTO = new ArrayList<>();
         for (int i = 0; i < tasks.size(); i++) {
             tasksDTO.add(new TaskDTO(tasks.get(i),tasks.get(i).getDiscipline().getId()));
         }
-        taskStorage.saveAll(tasksDTO);
+        storage.saveAllTasks(tasksDTO);
         return task;
     }
 
@@ -81,7 +93,7 @@ public class InFileTaskRepository implements TaskRepository {
         for (int i = 0; i < tasks.size(); i++) {
             tasksDTO.add(new TaskDTO(tasks.get(i),tasks.get(i).getDiscipline().getId()));
         }
-        taskStorage.saveAll(tasksDTO);
+        storage.saveAllTasks(tasksDTO);
         return removed;
     }
 }
