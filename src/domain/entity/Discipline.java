@@ -10,7 +10,7 @@ public class Discipline {
     @Override
     public String toString() {
         return "Discipline{" +
-                "hash=" + super.toString() +
+                //"hash=" + super.toString() +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", closed=" + closed +

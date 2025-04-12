@@ -8,13 +8,15 @@ import java.util.List;
 public interface Storage {
     List<TaskDTO> readAllTasks();
 
-    void saveAllTasks(List<TaskDTO> tasks);
-
     TaskDTO addTask(TaskDTO task);
+
+    TaskDTO updateTask(TaskDTO task);
 
     List<DisciplineDTO> readAllDisciplines();
 
-    void saveAllDisciplines(List<DisciplineDTO> disciplines);
+    DisciplineDTO updateDiscipline(DisciplineDTO discipline);
 
     DisciplineDTO addDiscipline(DisciplineDTO discipline);
+
+    boolean deleteTask(TaskDTO task);
 }

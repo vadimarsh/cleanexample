@@ -59,20 +59,6 @@ public class InFileStorage implements Storage {
         }
         return readedTasks;
     }
-    @Override
-    public void saveAllTasks(List<TaskDTO> tasks) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(TASKS_FNAME,false));){
-            for (TaskDTO task : tasks) {
-                {
-                    writer.write(task.getId()+"|"+task.getName()+"|"+task.getDeadline()+"|"+task.getStatus()+"|"+task.getDiscipline_id());
-                    writer.newLine();
-                }
-            }
-            } catch(IOException e) {
-
-            throw new RuntimeException(e);
-        }
-    }
 
     @Override
     public TaskDTO addTask(TaskDTO task) {
@@ -85,6 +71,29 @@ public class InFileStorage implements Storage {
             throw new RuntimeException(ex);
         }
         return task;
+    }
+
+    @Override
+    public TaskDTO updateTask(TaskDTO updatedTask) {
+        List<TaskDTO> tasks = readAllTasks();
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(TASKS_FNAME,false));){
+            for (TaskDTO task : tasks) {
+                {
+                    if(updatedTask.getId()==task.getId()) {
+                        writer.write(updatedTask.getId() + "|" + updatedTask.getName() + "|" + updatedTask.getDeadline() + "|" + updatedTask.getStatus() + "|" + updatedTask.getDiscipline_id());
+                    }else {
+                        writer.write(task.getId() + "|" + task.getName() + "|" + task.getDeadline() + "|" + task.getStatus() + "|" + task.getDiscipline_id());
+                    }
+                    writer.newLine();
+
+                }
+            }
+        } catch(IOException e) {
+
+            throw new RuntimeException(e);
+        }
+        return updatedTask;
     }
 
     @Override
@@ -109,11 +118,17 @@ public class InFileStorage implements Storage {
         return readedDisciplines;
     }
     @Override
-    public void saveAllDisciplines(List<DisciplineDTO> disciplines) {
+    public DisciplineDTO updateDiscipline(DisciplineDTO updatedDiscipline) {
+        List<DisciplineDTO> disciplines = readAllDisciplines();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(DISCIPLINES_FNAME,false))){
             for (DisciplineDTO discipline : disciplines) {
                 {
-                    writer.write(discipline.getId()+"|"+discipline.getName()+"|"+discipline.getSemestr()+"|"+discipline.getClosed());
+                    if(discipline.getId()==updatedDiscipline.getId()){
+                        writer.write(updatedDiscipline.getId()+"|"+updatedDiscipline.getName()+"|"+updatedDiscipline.getSemestr()+"|"+updatedDiscipline.getClosed());
+                    }
+                    else {
+                        writer.write(discipline.getId()+"|"+discipline.getName()+"|"+discipline.getSemestr()+"|"+discipline.getClosed());
+                    }
                     writer.newLine();
                 }
             }
@@ -121,6 +136,7 @@ public class InFileStorage implements Storage {
 
             throw new RuntimeException(e);
         }
+        return updatedDiscipline;
     }
 
     @Override
@@ -135,5 +151,28 @@ public class InFileStorage implements Storage {
             throw new RuntimeException(ex);
         }
         return discipline;
+    }
+
+    @Override
+    public boolean deleteTask(TaskDTO deletedTask) {
+        boolean flag = false;
+        List<TaskDTO> tasks = readAllTasks();
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(TASKS_FNAME,false));){
+            for (TaskDTO task : tasks) {
+                {
+                    if(deletedTask.getId()!=task.getId()) {
+                        writer.write(task.getId() + "|" + task.getName() + "|" + task.getDeadline() + "|" + task.getStatus() + "|" + task.getDiscipline_id());
+                        writer.newLine();
+                    }else{
+                        flag = true;
+                    }
+                }
+            }
+        } catch(IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return flag;
     }
 }

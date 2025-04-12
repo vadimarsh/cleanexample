@@ -38,12 +38,12 @@ public class InMemoryTaskRepository implements TaskRepository {
     }
 
     @Override
-    public List<Task> getTasks() {
+    public List<Task> getAll() {
         return tasks;
     }
 
     @Override
-    public List<Task> getUnclosedTasks() {
+    public List<Task> getAllUnclosed() {
         List<Task> unclosedTasks= new ArrayList();
         for (int i = 0; i < tasks.size(); i++) {
             if(!tasks.get(i).isClosed()){

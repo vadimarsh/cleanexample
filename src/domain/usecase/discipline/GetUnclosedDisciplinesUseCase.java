@@ -14,7 +14,7 @@ public class GetUnclosedDisciplinesUseCase {
     private final DisciplineRepository disciplineRepository;
 
     public List<Discipline> invoke(){
-        List<Discipline> disciplines = this.disciplineRepository.getAllDisciplines();
+        List<Discipline> disciplines = this.disciplineRepository.getAll();
         List<Discipline> unClosedDisciplines = new ArrayList<>();
         for (int i = 0; i < disciplines.size(); i++) {
             if(!disciplines.get(i).isClosed()){

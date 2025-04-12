@@ -6,12 +6,11 @@ import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import java.util.EventListener;
 import java.util.List;
 
 public class DisciplComboBoxModel implements ComboBoxModel<String> {
-    List<Discipline> disciplines;
-    Discipline selectedDiscipline;
+    private List<Discipline> disciplines;
+    private Discipline selectedDiscipline = null;
     protected EventListenerList listenerList = new EventListenerList();
 
     public DisciplComboBoxModel(List<Discipline> disciplines) {
@@ -39,14 +38,20 @@ public class DisciplComboBoxModel implements ComboBoxModel<String> {
 
     @Override
     public String getSelectedItem() {
+        String result = "Выберите";
         if (selectedDiscipline!=null){
-        return selectedDiscipline.getName();}
-        else return "Выберите";
+        result = selectedDiscipline.getName();
+        }
+        return result;
     }
 
     public Discipline getSelectedDiscipline() {
+        if (selectedDiscipline == null) {
+            throw new RuntimeException("Следует выбрать дисциплину");
+        }
         return selectedDiscipline;
     }
+
 
     @Override
     public int getSize() {

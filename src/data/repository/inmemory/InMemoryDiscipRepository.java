@@ -16,7 +16,7 @@ public class InMemoryDiscipRepository implements DisciplineRepository {
     }
 
     @Override
-    public List<Discipline> getAllDisciplines() {
+    public List<Discipline> getAll() {
         return disciplines;
     }
 
@@ -26,7 +26,7 @@ public class InMemoryDiscipRepository implements DisciplineRepository {
     }
 
     @Override
-    public Discipline getDisciplineByID(int id) {
+    public Discipline getByID(int id) {
         Discipline discipline = null;
         for (int i = 0; i < disciplines.size(); i++) {
             discipline = disciplines.get(i);

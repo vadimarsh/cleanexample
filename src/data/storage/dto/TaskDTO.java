@@ -18,6 +18,20 @@ public class TaskDTO {
     private String deadline;
     private int discipline_id;
 
+    public TaskDTO(Task task){
+        this.id = task.getId();
+        this.name = task.getTitle();
+        if(task.isClosed()){
+            this.closed = "Закрыта";
+        }else{
+            this.closed = "Открыта";
+        }
+        DateFormat date = new SimpleDateFormat("dd.MM.yyyy"); // Форматирующий объект даты
+
+        this.deadline = date.format(new Date(task.getDeadline()));
+        this.discipline_id = task.getDiscipline().getId();
+    }
+
     public TaskDTO(Task task, int discipline_id){
         this.id = task.getId();
         this.name = task.getTitle();

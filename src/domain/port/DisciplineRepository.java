@@ -7,10 +7,10 @@ import java.util.List;
 public interface DisciplineRepository {
     Discipline create (Discipline discipline);
 
-    List<Discipline> getAllDisciplines();
+    List<Discipline> getAll();
 
     void update(Discipline discipline);
 
-    Discipline getDisciplineByID(int id);
+    Discipline getByID(int id);
 
 }

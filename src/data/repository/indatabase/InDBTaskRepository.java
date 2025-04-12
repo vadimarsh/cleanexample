@@ -1,6 +1,7 @@
-package data.repository.infile;
+package data.repository.indatabase;
 
 import data.repository.Storage;
+import data.storage.SQLiteStorage;
 import data.storage.dto.DisciplineDTO;
 import data.storage.dto.TaskDTO;
 import domain.entity.Discipline;
@@ -10,21 +11,40 @@ import domain.port.TaskRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InFileTaskRepository implements TaskRepository {
+public class InDBTaskRepository implements TaskRepository {
     private Storage storage;
     private List<Task> tasks = new ArrayList<>();
-    public InFileTaskRepository(Storage storage){
-       this.storage =storage;
 
+    public InDBTaskRepository(Storage storage) {
+        this.storage = storage;
     }
 
     @Override
     public Task create(Task task) {
-        TaskDTO taskDTO = new TaskDTO(task);
-        Task newTask =this.storage.addTask(taskDTO).toTask(task.getDiscipline());
+        Task newTask = this.storage.addTask(new TaskDTO(task)).toTask(task.getDiscipline());
         this.tasks.add(newTask);
         return newTask;
+
     }
+
+    @Override
+    public List<Task> findByDiscipline(Discipline discipline) {
+        List<Task> findedTasks = new ArrayList<>();
+        for (Task task: tasks
+             ) {
+            if (task.getDiscipline().getId()==discipline.getId()){
+                findedTasks.add(task);
+            }
+        }
+        return findedTasks;
+    }
+
+    @Override
+    public Task update(Task task) {
+        storage.updateTask(new TaskDTO(task));
+        return task;
+    }
+
     @Override
     public List<Task> getAll() {
         List<TaskDTO> tasksDTO = storage.readAllTasks();
@@ -50,36 +70,14 @@ public class InFileTaskRepository implements TaskRepository {
         }
         return null;
     }
-    @Override
-    public Task update(Task task) {
-        List<TaskDTO> tasksDTO = new ArrayList<>();
-        for (int i = 0; i < tasks.size(); i++) {
-            tasksDTO.add(new TaskDTO(tasks.get(i)));
-        }
-        storage.updateTask(new TaskDTO(task));
-        return task;
-    }
-
-
-
-    @Override
-    public List<Task> findByDiscipline(Discipline discipline) {
-        List<Task> finded = new ArrayList<>();
-        for (Task task : tasks){
-            if(task.getDiscipline().getId() == discipline.getId()){
-                finded.add(task);
-            }
-        }
-        return finded;
-
-    }
 
     @Override
     public List<Task> getAllUnclosed() {
-        List<Task> unclosedTasks = new ArrayList();
-        for (int i = 0; i < tasks.size(); i++) {
-            if(!tasks.get(i).isClosed()){
-                unclosedTasks.add(tasks.get(i));
+        List<Task> unclosedTasks = new ArrayList<>();
+        for (Task task: tasks
+             ) {
+            if (task.isClosed()==false){
+                unclosedTasks.add(task);
             }
         }
         return unclosedTasks;
@@ -87,8 +85,9 @@ public class InFileTaskRepository implements TaskRepository {
 
     @Override
     public boolean delete(Task task) {
+
+        boolean result = storage.deleteTask(new TaskDTO(task));
         tasks.remove(task);
-        boolean removed = storage.deleteTask(new TaskDTO(task));
-        return removed;
+        return result;
     }
 }

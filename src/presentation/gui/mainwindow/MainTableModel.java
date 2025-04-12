@@ -8,6 +8,7 @@ import java.util.List;
 
 public class MainTableModel extends AbstractTableModel {
     private final MainWindowController controller;
+
     private List<Task> tasks;
     public MainTableModel(MainWindowController controller, List<Task> tasks) {
         this.controller = controller;
@@ -92,7 +93,6 @@ public class MainTableModel extends AbstractTableModel {
             Task task = tasks.get(rowIndex);
             if (!task.isClosed()) {
                 Date date = (Date)aValue;
-//                task.setDeadline(date.getTime());
                 controller.updateDeadlineTask(task, date.getTime());
             }
 
@@ -102,8 +102,16 @@ public class MainTableModel extends AbstractTableModel {
             if (!task.isClosed()) {
                 controller.closeTask(task);
             }
-
         }
-
     }
+
+    public Task getSelectedTask(int selectedRow) {
+        Task selectedTask;
+        selectedTask = tasks.get(selectedRow);
+        System.out.println("selectedRow = "+selectedRow);
+        System.out.println("selectedTaskIndex = "+tasks.indexOf(selectedTask));
+        System.out.println("task = " + selectedTask);
+        return selectedTask;
+    }
+
 }

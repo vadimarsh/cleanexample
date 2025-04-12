@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.List;
 
@@ -21,11 +20,11 @@ public class MainWindowController {
     private GUISwingConfig config;
     private final MainWindowView view;
     private MainTableModel mainTableModel;
-    private boolean showClosedTasks; // флажок для определеления состояния таблицы
 
     // слушатели
     private MenuListener menuListener;
     private ButtonListener buttonListener;
+    private WindowListener windowListener;
 
     // доступные посредством окна UseCase
     private GetAllDisciplinesUseCase getAllDisciplinesUseCase;
@@ -35,13 +34,15 @@ public class MainWindowController {
     private MarkDoneTaskUseCase markDoneTaskUseCase;
     private RefreshDisciplineStatusUseCase refreshDisciplineStatusUseCase;
     private SetDeadLineUseCase setDeadLineUseCase;
+    private CancelTaskUseCase cancelTaskUseCase;
 
     public MainWindowController(GUISwingConfig config, MainWindowView mainWindowView){
         this.config = config;
         this.view = mainWindowView;
         this.menuListener = new MenuListener();
+        this.windowListener = new WindowListener();
         this.buttonListener = new ButtonListener();
-        this.showClosedTasks = false;
+
 
         createTaskUseCase = config.createTask();
         getAllDisciplinesUseCase = config.getAllDiscliplines();
@@ -50,64 +51,52 @@ public class MainWindowController {
         markDoneTaskUseCase = config.markDoneTask();
         refreshDisciplineStatusUseCase = config.refreshDisciplineStatus();
         setDeadLineUseCase = config.setDeadLine();
-
+        cancelTaskUseCase = config.cancelTaskUseCase();
         refreshTableModel();
         setDisciplinesList();
         setControllers();
     }
 
     private void setDisciplinesList() {
-        //view.getjlDiscipline().removeAllItems();
-
         List<Discipline> allDisciplines = getAllDisciplinesUseCase.invoke();
-        view.getjlDiscipline().setModel(new DisciplComboBoxModel(allDisciplines));
-        view.getjlDiscipline().revalidate();
-        //for (int i = 0; i < allDisciplines.size(); i++) {
-        //    view.getjlDiscipline().addItem(allDisciplines.get(i).getName());
-        //}
-
+        view.setDisciplinesList(allDisciplines);
     }
 
     private void setControllers(){
-        view.getButAddTask().addActionListener(buttonListener);
-        view.getMiDisciplines().addActionListener(menuListener);
-        view.getMiUnclosedTasks().addActionListener(menuListener);
+        view.setAddTaskListener(buttonListener);
+        view.setShowDisciplinesListener(menuListener);
+        view.setShowUnclosedTasksSwitchListener(menuListener);
+        view.setWindowListener(windowListener);
 
-        view.getMainFrame().addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowActivated(WindowEvent e) {
-                refreshTableModel();
-                setDisciplinesList();
-            }
-        });
-
+        view.setCancelTaskListener(menuListener);
     }
 
     private void createTaskBtClick() {
-        DisciplComboBoxModel model = (DisciplComboBoxModel) getView().getjlDiscipline().getModel();
-        Discipline discipline = model.getSelectedDiscipline();
-        if(discipline!=null) {
             Task task = null;
             try {
-                task = new Task(0, view.getTfTaskTitle().getText(), false, DateFormat.getDateInstance(DateFormat.SHORT).parse(view.TfDeadLine().getText()).getTime(), discipline);
+                task = new Task(0, view.getTaskTitle(), false, view.getDeadlineValue(), view.getSelectedDiscipline());
+
+                task = createTaskUseCase.invoke(task); // добавляем новую задачу
+                //вызываем функцию бизнес-логики "обновить статус дисциплины", чтобы опять пометить дисциплину как нерешенную, на тот случай если она была уже закрыта
+                refreshDisciplineStatusUseCase.invoke(task.getDiscipline());
+                mainTableModel.fireTableDataChanged();
             } catch (ParseException e) {
                 System.err.println("неверный формат даты");
+                view.showMsgDialog("Неверный формат даты");
+            } catch (RuntimeException ex){
+                view.showMsgDialog("Следует выбрать дисциплину");
             }
-            task = createTaskUseCase.invoke(task); // добавляем новую задачу
-            //вызываем функцию бизнес-логики "обновить статус дисциплины", чтобы опять пометить дисциплину как нерешенную, на тот случай если она была уже закрыта
-            refreshDisciplineStatusUseCase.invoke(task.getDiscipline());
-            mainTableModel.fireTableDataChanged();
-        }
+
     }
 
     public void refreshTableModel(){
-        if(showClosedTasks) {
+        if(view.isUnclosedTasksChecked()) {
             mainTableModel = new MainTableModel(this, getUnclosedTasksUseCase.invoke());
         }
         else{
             mainTableModel = new MainTableModel(this, getAllTasksUseCase.invoke());
         }
-        view.getTableTasks().setModel(mainTableModel);
+        view.setTableTasksModel(mainTableModel);
     }
 
 
@@ -137,12 +126,17 @@ public class MainWindowController {
     private class MenuListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            Object o = e.getSource();
-            if (o.equals(getView().getMiUnclosedTasks())) {
-                showClosedTasks=getView().getMiUnclosedTasks().getState();
+            Object o = e.getActionCommand();
+            if (o.equals("Незакрытые задачи")) {
                 refreshTableModel();
-            } else if (o.equals(getView().getMiDisciplines())) {
+            } else if (o.equals("Дисциплины")) {
                 new DisciplinesWindowController(config, new DisciplinesWindowView(view.getMainFrame()));
+            } else if (o.equals("Отменить задачу")) {
+                Task canceledTask = view.getSelectedTask();
+                cancelTaskUseCase.invoke(canceledTask);
+                Discipline discipline = canceledTask.getDiscipline();
+                refreshDisciplineStatusUseCase.invoke(discipline);
+                refreshTableModel();
             }
         }
     }
@@ -152,5 +146,12 @@ public class MainWindowController {
             public void actionPerformed(ActionEvent e) {
                 createTaskBtClick();
             }
+    }
+    private class WindowListener extends WindowAdapter{
+        @Override
+        public void windowActivated(WindowEvent e) {
+            refreshTableModel();
+            setDisciplinesList();
+        }
     }
 }

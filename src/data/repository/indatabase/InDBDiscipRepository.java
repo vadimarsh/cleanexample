@@ -1,6 +1,7 @@
-package data.repository.infile;
+package data.repository.indatabase;
 
 import data.repository.Storage;
+import data.storage.SQLiteStorage;
 import data.storage.dto.DisciplineDTO;
 import domain.entity.Discipline;
 import domain.port.DisciplineRepository;
@@ -8,13 +9,12 @@ import domain.port.DisciplineRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InFileDiscipRepository implements DisciplineRepository {
-   private Storage storage;
-   private List<Discipline> disciplines = new ArrayList<>();
+public class InDBDiscipRepository implements DisciplineRepository {
+    private Storage storage;
+    private List<Discipline> disciplines = new ArrayList<>();
 
-    public InFileDiscipRepository(Storage storage){
-       this.storage=storage;
-       disciplines= getAll();
+    public InDBDiscipRepository(Storage storage){
+        this.storage=storage;
     }
 
     @Override
@@ -31,29 +31,24 @@ public class InFileDiscipRepository implements DisciplineRepository {
         disciplines = new ArrayList<>();
         for (int i = 0; i < disciplineDTOS.size(); i++) {
             disciplines.add(disciplineDTOS.get(i).toDiscipline());
-
         }
         return disciplines;
     }
 
     @Override
     public void update(Discipline discipline) {
-        disciplines.set(disciplines.indexOf(discipline),discipline);
         storage.updateDiscipline(new DisciplineDTO(discipline));
     }
 
     @Override
     public Discipline getByID(int id) {
-        Discipline discipline = null;
-        for (int i = 0; i < disciplines.size(); i++) {
-             discipline = disciplines.get(i);
-            if(discipline.getId()==id){
-                return disciplines.get(i);
-            }
-
+        Discipline result = null;
+        for (Discipline discipline: disciplines
+             ) {            if(discipline.getId()==id){
+                 result = discipline;
+                 break;
+                }
         }
-        System.out.println(id);
-        return null;
+        return result;
     }
-
 }

@@ -1,16 +1,45 @@
+import data.storage.SQLiteStorage;
+import data.storage.dto.DisciplineDTO;
+import data.storage.dto.TaskDTO;
+import domain.entity.Discipline;
+import domain.entity.Task;
 import presentation.config.GUISwingConfig;
 import presentation.gui.mainwindow.MainWindowController;
 import presentation.gui.mainwindow.MainWindowView;
 
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
         // DefaultConfig defaultConfig = new DefaultConfig();
+
+        //SQLiteStorage.getInstance().addDiscipline(new DisciplineDTO(new Discipline(-1,"Базы данных",false,4)));
+       // SQLiteStorage.getInstance().addTask(new TaskDTO(-1,"Лабораторная №1","10.04.2025","Открыта",1));
+
+        /* List<DisciplineDTO> disciplineDTOS = SQLiteStorage.getInstance().readAllDisciplines();
+        for (DisciplineDTO discipline: disciplineDTOS
+             ) {
+            Discipline discipline1 = discipline.toDiscipline();
+            System.out.println(discipline1.toString());
+            discipline1.setClosed(true);
+            SQLiteStorage.getInstance().updateDiscipline(new DisciplineDTO(discipline1));
+        }
+        List<TaskDTO> tasksDTOS = SQLiteStorage.getInstance().readAllTasks();
+        for (TaskDTO task: tasksDTOS
+        ) {
+            System.out.println(task.toTask(disciplineDTOS.get(0).toDiscipline()).toString());
+
+        }
+        SQLiteStorage.getInstance().closeDB();
+*/
         GUISwingConfig swingConfig = new GUISwingConfig();
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 new MainWindowController(swingConfig, new MainWindowView());
             }
         });
+
+
         /* CreateTaskUseCase createTask = defaultConfig.createTask();
         CreateDisciplineUseCase createDiscipline = defaultConfig.createDiscipline();
         GetAllDisciplinesUseCase getAllDisciplinesUseCase = defaultConfig.getAllDiscliplines();

@@ -12,6 +12,6 @@ public class GetAllTasksUseCase {
 
     private final TaskRepository taskRepository;
     public List<Task> invoke(){
-        return taskRepository.getTasks();
+        return taskRepository.getAll();
     }
 }
